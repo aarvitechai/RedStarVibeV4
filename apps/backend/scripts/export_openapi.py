@@ -6,7 +6,7 @@ import sys
 
 os.environ.setdefault("RSV_ENV", "test")
 
-from app.main import create_app  # noqa: E402
+from app.main import create_app
 
 
 def main() -> None:

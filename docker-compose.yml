@@ -17,13 +17,15 @@ services:
     volumes:
       - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
-      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:${RSV_HTTP_PORT:-8080}:8080"
     networks: [public, private]
     depends_on: [api, web]
     restart: unless-stopped
 
   web:
-    build: ./apps/web
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
     image: ghcr.io/aarvitechai/redstarvibe-web:${RSV_IMAGE_TAG:-local}
     environment:
       NEXT_PUBLIC_MEDIA_ORIGIN: ${RSV_MEDIA_ORIGIN:-}

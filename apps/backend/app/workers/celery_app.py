@@ -10,7 +10,7 @@ settings = get_settings()
 # kombu ships without type hints
 _queues = tuple(Queue(name) for name in ("default", "media", "ai"))  # type: ignore[no-untyped-call]
 
-celery_app = Celery("redstarvibe", broker=settings.redis_url, backend=None, include=[])
+celery_app = Celery("redstarvibe", broker=settings.redis_url, backend=None, include=["app.workers.outbox_tasks"])
 
 celery_app.conf.update(
     task_queues=_queues,
@@ -25,5 +25,7 @@ celery_app.conf.update(
     timezone="UTC",
     enable_utc=True,
     broker_connection_retry_on_startup=True,
-    beat_schedule={},
+    beat_schedule={
+        "outbox-relay": {"task": "outbox.relay", "schedule": 2.0, "options": {"expires": 10}},
+    },
 )

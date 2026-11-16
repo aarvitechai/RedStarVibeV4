@@ -35,4 +35,4 @@ def test_production_accepts_strong_secrets() -> None:
 
 
 def test_local_allows_default_secrets() -> None:
-    assert Settings(env="local").secret_key == "change-me"
+    assert Settings(env="local", secret_key="change-me").secret_key == "change-me"

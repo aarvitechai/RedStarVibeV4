@@ -1,0 +1,63 @@
+name: Deploy
+
+# staging branch -> staging environment; production branch -> production environment (required reviewers).
+# Skips the remote step until DEPLOY_HOST is configured for the environment (see docs/runbooks/deploy.md).
+on:
+  push:
+    branches: [staging, production]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push (tag = commit SHA)
+        run: |
+          cp .env.example .env
+          sed -i 's/^POSTGRES_PASSWORD=$/POSTGRES_PASSWORD=build-only/' .env
+          export RSV_IMAGE_TAG=${{ github.sha }}
+          docker compose build api web
+          docker compose push api web
+
+  deploy:
+    needs: images
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'production' && 'production' || 'staging' }}
+    steps:
+      - name: Check target is configured
+        id: cfg
+        run: |
+          if [ -z "${{ secrets.DEPLOY_HOST }}" ]; then
+            echo "::warning::DEPLOY_HOST not set for this environment; images were pushed but nothing was deployed."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Deploy over SSH
+        if: steps.cfg.outputs.skip != 'true'
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER: ${{ secrets.DEPLOY_USER }}
+          TAG: ${{ github.sha }}
+        run: |
+          install -m 600 /dev/null key && printf '%s\n' "$SSH_KEY" > key
+          ssh -i key -o StrictHostKeyChecking=accept-new "$USER@$HOST" "
+            set -e
+            cd /opt/redstarvibe
+            git fetch --quiet origin && git checkout --quiet $TAG
+            export RSV_IMAGE_TAG=$TAG
+            docker compose pull api web
+            docker compose run --rm migrate
+            docker compose up -d --no-build
+            for i in \$(seq 1 60); do curl -fsS http://127.0.0.1:8080/health/ready && exit 0; sleep 2; done
+            echo 'not ready after 120 s' >&2; exit 1
+          "

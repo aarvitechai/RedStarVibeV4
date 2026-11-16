@@ -21,6 +21,9 @@ async def meta() -> MetaResponse:
     return MetaResponse(name=s.app_name, env=s.env, version="0.1.0", ai_provider=s.ai_provider)
 
 
-# Module routers are included below as they are built, e.g.:
-# from app.modules.accounts.router import router as accounts_router
-# api_router.include_router(accounts_router)
+# Module routers (one line per module).
+from app.modules.accounts.router import router as accounts_router  # noqa: E402
+from app.modules.admin.router import router as admin_router  # noqa: E402
+
+api_router.include_router(accounts_router)
+api_router.include_router(admin_router)

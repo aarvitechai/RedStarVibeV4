@@ -12,3 +12,10 @@ Every feature listed as already built is marked `not implemented` in docs/STATUS
 
 ## Consequences
 Phase 1 grows, so the Blueprint timeline must be re-estimated.
+
+## Note (2026-11-16, Phase 1)
+During Phase 1, Docker Desktop auto-started a separate, older `redstarvibe` Compose project located at
+`E:\Practice\RealAIProject\RedStarVibeProject\RedStarVibe` (services: gateway, web, api, ws, mcp, worker, beat,
+pgbouncer, objectstore, livekit, db). This is very likely the codebase the Blueprint describes as "already built".
+It was not inspected or modified. The product owner should decide whether V4 is a clean rebuild (this ADR stands)
+or should port verified parts of that codebase (supersede this ADR).
