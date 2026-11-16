@@ -49,4 +49,35 @@ echo "8. customer notifications via outbox -> worker: $N ($(curl -fsS -b "$CUST"
 HTML="$(curl -fsS "$BASE/business/sharma-$RUN")"
 echo "$HTML" | grep -q '<meta property="og:title" content="Sharma Electricals"' && echo "9. public page SSR with OG tags: ok"
 echo "$HTML" | grep -q 'Fan installation' && echo "10. public page lists services: ok"
+
+# ---- Phase 3: media, cards, share image, albums ----
+COMPOSE="${COMPOSE:-docker compose}"
+upload() {  # $1 = colour seed; prints asset id once processed by the media worker
+  IMG="$TMP/p$1.jpg"
+  $COMPOSE exec -T api python -c "from PIL import Image;import io,sys;b=io.BytesIO();Image.new('RGB',(1400,1000),($1,60,90)).save(b,'JPEG');sys.stdout.buffer.write(b.getvalue())" > "$IMG"
+  SIZE="$(wc -c < "$IMG" | tr -d ' ')"
+  INTENT="$(post "$CUST" "$CT" -d "{\"kind\":\"image\",\"purpose\":\"album\",\"content_type\":\"image/jpeg\",\"size_bytes\":$SIZE}" "$BASE/api/v1/media/uploads")"
+  AID="$(echo "$INTENT" | json "d['asset_id']")"; URL="$(echo "$INTENT" | json "d['upload_url']")"
+  curl -fsS -X PUT -H 'Content-Type: image/jpeg' --data-binary "@$IMG" "$URL" >/dev/null
+  post "$CUST" "$CT" -X POST "$BASE/api/v1/media/uploads/$AID/complete" >/dev/null
+  i=0; while [ "$i" -lt 30 ]; do
+    ST="$(curl -fsS -b "$CUST" "$BASE/api/v1/media/$AID" | json "d['status']")"; [ "$ST" = ready ] && break; i=$((i + 1)); sleep 1; done
+  [ "$ST" = ready ] || { echo "upload not processed: $ST" >&2; exit 1; }
+  echo "$AID"
+}
+A1="$(upload 200)"; A2="$(upload 40)"
+echo "11. two photos uploaded via presigned PUT and processed by the media worker: $A1 $A2"
+WEBP="$(curl -fsS -b "$CUST" "$BASE/api/v1/media/$A1" | json "d['urls']['640.webp']")"
+echo "12. rendition served from public bucket: $(curl -fsS -o "$TMP/dl" -w '%{http_code} %{content_type}' "$WEBP")"
+CARD="$(post "$CUST" "$CT" -d "{\"template_id\":\"diwali-hi\",\"photo_asset_id\":\"$A1\",\"fields\":{\"title\":\"शुभ दीपावली\",\"message\":\"Happy Diwali!\",\"from\":\"Priya\"}}" "$BASE/api/v1/cards" | json "d['id']")"
+i=0; while [ "$i" -lt 30 ]; do CST="$(curl -fsS "$BASE/api/v1/cards/$CARD" | json "d['status']")"; [ "$CST" = ready ] && break; i=$((i + 1)); sleep 1; done
+CIMG="$(curl -fsS "$BASE/api/v1/cards/$CARD" | json "d['image_url']")"
+echo "13. card rendered by worker: $CST $(curl -fsS -o "$TMP/dl" -w '%{http_code} %{content_type}' "$CIMG"); page $(curl -s -o /dev/null -w '%{http_code}' "$BASE/c/$CARD")"
+echo "14. business share image: $(curl -fsS -o "$TMP/dl" -w '%{http_code} %{content_type}' "$BASE/api/v1/og/business/sharma-$RUN.png")"
+ALB="$(post "$CUST" "$CT" -d '{"title":"Smoke album"}' "$BASE/api/v1/albums" | json "d['id']")"
+TOK="$(post "$CUST" "$CT" -X PUT -d "{\"asset_ids\":[\"$A1\",\"$A2\"]}" "$BASE/api/v1/albums/$ALB/items" | json "d['share_token']")"
+post "$CUST" "$CT" -X POST "$BASE/api/v1/albums/$ALB/slideshow" >/dev/null
+i=0; while [ "$i" -lt 60 ]; do SST="$(curl -fsS -b "$CUST" "$BASE/api/v1/albums/mine" | json "d[0]['slideshow_status']")"; [ "$SST" = ready ] && break; [ "$SST" = failed ] && break; i=$((i + 1)); sleep 1; done
+MP4="$(curl -fsS -b "$CUST" "$BASE/api/v1/albums/mine" | json "d[0]['slideshow_url']")"
+echo "15. album flipbook page $(curl -s -o /dev/null -w '%{http_code}' "$BASE/a/$TOK"); slideshow $SST $(curl -fsS -o "$TMP/dl" -w '%{content_type} %{size_download}B' "$MP4")"
 echo "SMOKE PASSED — open $BASE/business/sharma-$RUN"

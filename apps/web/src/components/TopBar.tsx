@@ -8,6 +8,8 @@ export function TopBar() {
       <nav className={styles.nav} aria-label="Main">
         <Link href="/bookings" className={styles.navLink}>My bookings</Link>
         <Link href="/dashboard" className={styles.navLink}>My business</Link>
+        <Link href="/cards" className={styles.navLink}>Cards</Link>
+        <Link href="/albums" className={styles.navLink}>Albums</Link>
         <Link href="/notifications" className={styles.navLink}>Notifications</Link>
         <Link href="/account" className={styles.navLink}>Account</Link>
       </nav>

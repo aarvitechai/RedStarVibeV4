@@ -118,6 +118,9 @@ function Manage({ biz, onChange }: { biz: BusinessOwnerView; onChange: () => voi
         <p className={styles.share}>Share your page: {pageUrl}</p>
         <a className={styles.navLink} href={`https://wa.me/?text=${encodeURIComponent(`Book ${biz.name} on RedStarVibe: ${pageUrl}`)}`}
           target="_blank" rel="noopener noreferrer">Share on WhatsApp</a>
+        {/* eslint-disable-next-line @next/next/no-img-element -- QR SVG from our API */}
+        <img src={`/api/v1/qr.svg?path=${encodeURIComponent(`/business/${biz.slug}`)}`} alt={`QR code for ${biz.name}`} width={160} height={160} />
+        <p className={styles.muted}>Print this QR for your shop counter.</p>
       </section>
       <BookingsPanel biz={biz} />
       <ServicesPanel biz={biz} onChange={onChange} />

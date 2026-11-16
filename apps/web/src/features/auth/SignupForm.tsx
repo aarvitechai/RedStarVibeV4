@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
@@ -10,6 +10,7 @@ import styles from "./auth.module.css";
 
 export function SignupForm() {
   const router = useRouter();
+  const ref = useSearchParams().get("ref");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
 
@@ -27,6 +28,7 @@ export function SignupForm() {
           password: form.get("password"),
           display_name: form.get("display_name"),
           is_18_or_older: form.get("is_18_or_older") === "on",
+          referral_code: ref && /^[A-Za-z0-9]{1,12}$/.test(ref) ? ref : null,
         }),
       });
       router.push("/account");

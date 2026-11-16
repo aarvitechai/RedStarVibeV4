@@ -36,6 +36,7 @@ class SignupRequest(BaseModel):
     password: str = Field(min_length=10, max_length=128)
     display_name: str = Field(min_length=1, max_length=80)
     is_18_or_older: bool = Field(description="ADR 0015: platform is 18+ until a parental-consent flow exists")
+    referral_code: str | None = Field(default=None, max_length=12, pattern=r"^[A-Za-z0-9]+$")
 
     @field_validator("username")
     @classmethod

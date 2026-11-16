@@ -10,9 +10,16 @@ settings = get_settings()
 # kombu ships without type hints
 _queues = tuple(Queue(name) for name in ("default", "media", "ai"))  # type: ignore[no-untyped-call]
 
-celery_app = Celery(
-    "redstarvibe", broker=settings.redis_url, backend=None, include=["app.workers.outbox_tasks", "app.modules.booking.tasks"]
-)
+# Every module that defines Celery tasks must be listed here (tests/test_workers.py checks this).
+TASK_MODULES = [
+    "app.workers.outbox_tasks",
+    "app.modules.booking.tasks",
+    "app.modules.media.tasks",
+    "app.modules.cards.tasks",
+    "app.modules.albums.tasks",
+]
+
+celery_app = Celery("redstarvibe", broker=settings.redis_url, backend=None, include=TASK_MODULES)
 
 celery_app.conf.update(
     task_queues=_queues,

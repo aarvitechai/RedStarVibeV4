@@ -37,7 +37,7 @@ services:
 
   migrate:
     <<: *backend
-    command: ["alembic", "upgrade", "head"]
+    command: ["sh", "-c", "alembic upgrade head && python -m scripts.ensure_buckets"]
     restart: "no"
 
   api:
@@ -53,7 +53,7 @@ services:
 
   worker:
     <<: *backend
-    command: ["celery", "-A", "app.workers.celery_app", "worker", "-Q", "default,media,ai", "--concurrency", "2", "--loglevel", "INFO"]
+    command: ["celery", "-A", "app.workers.celery_app", "worker", "-Q", "default,media,ai", "--concurrency", "3", "--loglevel", "INFO"]
     depends_on:
       migrate: { condition: service_completed_successfully }
     mem_limit: 768m
@@ -83,6 +83,15 @@ services:
       retries: 20
     restart: unless-stopped
 
+  objectstore:
+    # SeaweedFS S3 emulates Cloudflare R2 locally (ADR 0005). Never used in staging/production.
+    image: chrislusf/seaweedfs:4.54
+    command: ["server", "-dir=/data", "-s3", "-s3.port=8333", "-master.volumeSizeLimitMB=256", "-volume.max=100"]
+    volumes:
+      - objectdata:/data
+    networks: [private]
+    restart: unless-stopped
+
   redis:
     image: redis:7.4-alpine
     command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction"]
@@ -104,3 +113,4 @@ networks:
 volumes:
   pgdata: {}
   redisdata: {}
+  objectdata: {}

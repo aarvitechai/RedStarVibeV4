@@ -1,14 +1,14 @@
 # RedStarVibe Project Status
 
 Updated: 2026-11-16
-Current phase: Phase 2 — business daily tool (code complete locally; pilot validation not started)
+Current phase: Phase 3 — viral growth (code complete locally)
 Release: none deployed. Local stack verified at http://localhost:8090 (see `docs/setup.md`).
 
 ## Phase status
 - [x] Phase 0 — Repository audit and engineering setup (`docs/audit/phase-0-audit.md`)
 - [ ] Phase 1 — Production base (+ accounts/auth, ADR 0017) — code done; hosting items open (checklist below)
 - [ ] Phase 2 — Business daily tool — code done; exit criterion (20 real businesses, 2 weeks) not started
-- [ ] Phase 3 — Viral growth
+- [ ] Phase 3 — Viral growth — code done; exit criterion (10% of actives share weekly) needs real users
 - [ ] Phase 4 — Social complete
 - [ ] Phase 5 — Events and shop
 - [ ] Phase 6 — Money
@@ -59,6 +59,21 @@ Release: none deployed. Local stack verified at http://localhost:8090 (see `docs
 | Web push, email, SMS/WhatsApp channels | **open** | needs providers (Blueprint 25) |
 | Holidays / closures, quotation requests, business inbox, analytics | **open** | Phase 2 backlog |
 | Pilot: 20 real businesses taking bookings for 2 weeks | **not started** | needs hosting + onboarding |
+
+## Phase 3 checklist
+| Item | Status | Evidence |
+|---|---|---|
+| Media: presigned direct upload (10 min), magic-byte validation, EXIF/GPS strip, WebP+AVIF 320/640/1080, raw deleted | done | `tests/test_phase3_growth.py`; smoke steps 11–12 |
+| Video/voice processing (H.264 MP4 + poster, AAC) with duration limits | done (code) | exercised in Phase 4 |
+| SeaweedFS locally (ADR 0005), R2-ready storage adapter | done | smoke |
+| Card templates as data (9 incl. Hindi), idempotent render by input hash, watermark, licensed Noto fonts | done | tests + smoke step 13 |
+| Public card page `/c/[id]` with OG image; share counter | done | smoke |
+| 1200×630 business share image, `og:image` on business pages | done | test + smoke step 14 |
+| QR codes for own pages only (business, invite) | done | `test_share_image_and_qr` |
+| Referral codes/links, attribution on signup, qualify on first booking, append-only points ledger, no double award, self-referral blocked | done | referral tests |
+| Albums: flipbook share page, private albums, owner-only photos, slideshow MP4 (FFmpeg, on request) | done | tests + smoke step 15 |
+| Licensed music for slideshows, festival story frames, A/B test of share flow | **open** | needs licensed assets |
+| Points 7-day pending period, device/IP fraud limits, leaderboard | **open** | backlog (Blueprint 26.4) |
 
 ## Verified features
 | Feature | Status | Evidence / test | Owner |

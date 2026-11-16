@@ -97,7 +97,11 @@ async def db(migrated_db: str) -> AsyncIterator[Any]:
         await s.execute(text(f"TRUNCATE {', '.join((*_TABLES, *EXTRA_TABLES))} RESTART IDENTITY CASCADE"))
         await s.commit()
     await get_redis().flushdb()
+    from app.core.storage import MemoryStorage, set_storage_for_tests
+
+    set_storage_for_tests(MemoryStorage())
     yield sm
+    set_storage_for_tests(None)
 
 
 @pytest.fixture

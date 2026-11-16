@@ -82,7 +82,7 @@ async def signup(db: AsyncSession, data: SignupRequest, client: ClientInfo) -> I
         await db.rollback()
         raise Conflict("account_exists", "This username or email is already taken.") from exc
     tokens = await _issue(db, user, client)
-    emit(db, "accounts.user_signed_up", {"user_id": str(user.id), "username": user.username})
+    emit(db, "accounts.user_signed_up", {"user_id": str(user.id), "username": user.username, "referral_code": data.referral_code})
     await db.commit()
     return tokens
 

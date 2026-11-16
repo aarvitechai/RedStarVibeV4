@@ -33,6 +33,30 @@ class Settings(BaseSettings):
     redis_url: str = "redis://redis:6379/0"
 
     ai_provider: Literal["none", "cloudflare", "anthropic"] = "none"
+    cloudflare_account_id: str = ""
+    cloudflare_ai_token: str = ""
+    anthropic_api_key: str = ""
+    ai_daily_calls_free: int = 50
+
+    # Object storage (SeaweedFS locally, R2 in staging/production)
+    s3_endpoint: str = "http://objectstore:8333"
+    s3_presign_endpoint: str = ""  # host the browser uses for presigned PUTs; empty = s3_endpoint
+    s3_access_key: str = "rsv-local"
+    s3_secret_key: str = "rsv-local-secret"  # noqa: S105 - local SeaweedFS only
+    s3_region: str = "auto"
+    s3_bucket_raw: str = "rsv-raw"
+    s3_bucket_public: str = "rsv-public"
+    media_public_base: str = "http://localhost:8080/rsv-public"
+
+    # Payments (Phase 6) — empty keys = sandbox fake provider, never in production
+    razorpay_key_id: str = ""
+    razorpay_key_secret: str = ""
+    razorpay_webhook_secret: str = ""
+
+    # Calls (Phase 7)
+    livekit_url: str = ""
+    livekit_api_key: str = ""
+    livekit_api_secret: str = ""
 
     health_check_timeout_s: float = Field(default=2.0, gt=0)
 

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { ApiError, api } from "@/lib/api/client";
 import type { Me, SessionInfo } from "@/lib/api/types";
+import { ReferralPanel } from "@/features/referrals/ReferralPanel";
 import styles from "./auth.module.css";
 
 type State =
@@ -84,6 +85,7 @@ export function AccountPanel() {
         {sessions.length > 1 ? <Button variant="secondary" onClick={() => void logoutOthers()}>Log out other devices</Button> : null}
         <Button variant="ghost" onClick={() => void logout()}>Log out</Button>
       </div>
+      <ReferralPanel />
     </section>
   );
 }
