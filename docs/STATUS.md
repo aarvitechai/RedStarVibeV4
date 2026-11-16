@@ -1,7 +1,7 @@
 # RedStarVibe Project Status
 
 Updated: 2026-11-16
-Current phase: Phase 4 — social complete (code complete locally)
+Current phase: Phase 5 — events and shop (code complete locally)
 Release: none deployed. Local stack verified at http://localhost:8090 (see `docs/setup.md`).
 
 ## Phase status
@@ -10,7 +10,7 @@ Release: none deployed. Local stack verified at http://localhost:8090 (see `docs
 - [ ] Phase 2 — Business daily tool — code done; exit criterion (20 real businesses, 2 weeks) not started
 - [ ] Phase 3 — Viral growth — code done; exit criterion (10% of actives share weekly) needs real users
 - [ ] Phase 4 — Social complete — code done; exit criterion (Day-7 retention improving) needs real users
-- [ ] Phase 5 — Events and shop
+- [ ] Phase 5 — Events and shop — code done; exit criterion (5 event companies + 10 shops live) needs pilot
 - [ ] Phase 6 — Money
 - [ ] Phase 7 — Calls and AI plus
 - [ ] Phase 8 — Scale (metrics-triggered)
@@ -90,6 +90,19 @@ Release: none deployed. Local stack verified at http://localhost:8090 (see `docs
 | Like/view counters buffered in Redis (flush every 5 s) | **open** | direct atomic UPDATE today (fine at launch scale) |
 | Messages monthly partitioning, web push for offline users, HLS for reels | **open** | needs scale / VAPID keys |
 | Close friends, restrict, story frames | **open** | backlog |
+
+## Phase 5 checklist
+| Item | Status | Evidence |
+|---|---|---|
+| Products with stock, SKU, photos; owner sees exact stock, public sees availability | done | `tests/test_phase5_events_shop.py` |
+| Orders: atomic conditional stock decrement (8 concurrent buyers, stock 3 -> exactly 3), Idempotency-Key, encrypted delivery address, bulk order with date, note | done | `test_concurrent_orders_never_oversell`, idempotency test |
+| Order status flow (placed→confirmed→ready/shipped→delivered), customer cancel before confirm, cancel restores stock, history | done | status tests |
+| Packages (silver/gold/platinum/custom) with items and vendors; vendor must have accepted the invite | done | `test_package_requires_accepted_vendor` |
+| Vendor network: invite, accept/decline | done | tests |
+| Unified calendar: one hold per organizer + vendor, EXCLUDE constraint blocks a vendor across organizers; vendor sees only own holds | done | `test_gold_package_blocks_all_vendors_across_organizers` |
+| Unpaid holds expire after 48 h (beat); cancellation releases holds; advance payment locks the date (Phase 6) | done | `test_event_booking_rules_idempotency_and_release` |
+| Web: shop + order management and packages/vendors/event bookings in dashboard; cart + package booking on public page; My orders | done | build passes |
+| Returns/delivery policy pages, vendor disputes process, shipping integration | **open** | operational policy needed |
 
 ## Verified features
 | Feature | Status | Evidence / test | Owner |

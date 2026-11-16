@@ -8,3 +8,4 @@ from app.modules.moderation import consumers as moderation_consumers  # noqa: F4
 from app.modules.notifications import consumers as notifications_consumers  # noqa: F401
 from app.modules.posts import consumers as posts_consumers  # noqa: F401
 from app.modules.referrals import consumers as referrals_consumers  # noqa: F401
+from app.modules.shop import consumers as shop_consumers  # noqa: F401

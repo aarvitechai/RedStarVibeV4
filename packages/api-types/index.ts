@@ -500,6 +500,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/businesses/{business_id}/calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Calendar */
+        get: operations["calendar_api_v1_businesses__business_id__calendar_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/businesses/{business_id}/event-bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Organizer Bookings */
+        get: operations["organizer_bookings_api_v1_businesses__business_id__event_bookings_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/businesses/{business_id}/hours": {
         parameters: {
             query?: never;
@@ -511,6 +545,59 @@ export interface paths {
         /** Set Hours */
         put: operations["set_hours_api_v1_businesses__business_id__hours_put"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/businesses/{business_id}/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Shop Orders */
+        get: operations["shop_orders_api_v1_businesses__business_id__orders_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/businesses/{business_id}/packages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Packages */
+        get: operations["packages_api_v1_businesses__business_id__packages_get"];
+        put?: never;
+        /** Create Package */
+        post: operations["create_package_api_v1_businesses__business_id__packages_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/businesses/{business_id}/products": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Catalog */
+        get: operations["catalog_api_v1_businesses__business_id__products_get"];
+        put?: never;
+        /** Add Product */
+        post: operations["add_product_api_v1_businesses__business_id__products_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -596,6 +683,41 @@ export interface paths {
         get: operations["slots_api_v1_businesses__business_id__slots_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/businesses/{business_id}/vendor-invites/{organizer_slug}/{decision}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Answer Invite */
+        post: operations["answer_invite_api_v1_businesses__business_id__vendor_invites__organizer_slug___decision__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/businesses/{business_id}/vendors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Vendors */
+        get: operations["vendors_api_v1_businesses__business_id__vendors_get"];
+        put?: never;
+        /** Invite Vendor */
+        post: operations["invite_vendor_api_v1_businesses__business_id__vendors_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -844,6 +966,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/event-bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Book */
+        post: operations["book_api_v1_event_bookings_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/event-bookings/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Mine */
+        get: operations["mine_api_v1_event_bookings_mine_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/event-bookings/{eb_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Set Status */
+        post: operations["set_status_api_v1_event_bookings__eb_id__status_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/feed": {
         parameters: {
             query?: never;
@@ -1054,6 +1227,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Place Order */
+        post: operations["place_order_api_v1_orders_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Orders */
+        get: operations["my_orders_api_v1_orders_mine_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/{order_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Set Status */
+        post: operations["set_status_api_v1_orders__order_id__status_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/posts": {
         parameters: {
             query?: never;
@@ -1155,6 +1379,23 @@ export interface paths {
         post: operations["save_api_v1_posts__post_id__save_post"];
         /** Unsave */
         delete: operations["unsave_api_v1_posts__post_id__save_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/products/{product_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Product */
+        put: operations["update_product_api_v1_products__product_id__put"];
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1915,6 +2156,63 @@ export interface components {
             /** Csrf Token */
             csrf_token: string;
         };
+        /** EventBookingIn */
+        EventBookingIn: {
+            /**
+             * Event Date
+             * Format: date
+             */
+            event_date: string;
+            /** Guests */
+            guests: number;
+            /** Note */
+            note?: string | null;
+            /**
+             * Package Id
+             * Format: uuid
+             */
+            package_id: string;
+        };
+        /** EventBookingOut */
+        EventBookingOut: {
+            /**
+             * Customer Id
+             * Format: uuid
+             */
+            customer_id: string;
+            /**
+             * Event Date
+             * Format: date
+             */
+            event_date: string;
+            /** Expires At */
+            expires_at: string | null;
+            /** Guests */
+            guests: number;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Organizer Id
+             * Format: uuid
+             */
+            organizer_id: string;
+            /**
+             * Package Id
+             * Format: uuid
+             */
+            package_id: string;
+            /** Package Name */
+            package_name: string;
+            /** Payment Status */
+            payment_status: string;
+            /** Price Paise */
+            price_paise: number;
+            /** Status */
+            status: string;
+        };
         /** GroupIn */
         GroupIn: {
             /** Title */
@@ -1945,6 +2243,28 @@ export interface components {
             stories: components["schemas"]["StoryOut"][];
             /** Title */
             title: string;
+        };
+        /** HoldOut */
+        HoldOut: {
+            /** As Vendor */
+            as_vendor: boolean;
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+            /**
+             * Event Booking Id
+             * Format: uuid
+             */
+            event_booking_id: string;
+            /** Package Name */
+            package_name: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
         };
         /** HoursIn */
         HoursIn: {
@@ -1981,6 +2301,13 @@ export interface components {
              * @description 0 = Monday
              */
             weekday: number;
+        };
+        /** InviteIn */
+        InviteIn: {
+            /** Terms */
+            terms?: string | null;
+            /** Vendor Slug */
+            vendor_slug: string;
         };
         /** LiveResponse */
         LiveResponse: {
@@ -2152,6 +2479,166 @@ export interface components {
              */
             ok: boolean;
         };
+        /** OrderCreate */
+        OrderCreate: {
+            /** Address */
+            address?: string | null;
+            /**
+             * Business Id
+             * Format: uuid
+             */
+            business_id: string;
+            /**
+             * Fulfilment
+             * @default pickup
+             * @enum {string}
+             */
+            fulfilment: "pickup" | "delivery";
+            /** Items */
+            items: components["schemas"]["OrderLine"][];
+            /** Note */
+            note?: string | null;
+            /**
+             * Wanted On
+             * @description Bulk orders: the date the customer needs it
+             */
+            wanted_on?: string | null;
+        };
+        /** OrderItemOut */
+        OrderItemOut: {
+            /** Name */
+            name: string;
+            /**
+             * Product Id
+             * Format: uuid
+             */
+            product_id: string;
+            /** Qty */
+            qty: number;
+            /** Unit Price Paise */
+            unit_price_paise: number;
+        };
+        /** OrderLine */
+        OrderLine: {
+            /**
+             * Product Id
+             * Format: uuid
+             */
+            product_id: string;
+            /** Qty */
+            qty: number;
+        };
+        /** OrderOut */
+        OrderOut: {
+            /** Address */
+            address?: string | null;
+            /**
+             * Business Id
+             * Format: uuid
+             */
+            business_id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Customer Id
+             * Format: uuid
+             */
+            customer_id: string;
+            /** Fulfilment */
+            fulfilment: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Items */
+            items: components["schemas"]["OrderItemOut"][];
+            /** Note */
+            note: string | null;
+            /** Payment Status */
+            payment_status: string;
+            /** Status */
+            status: string;
+            /** Total Paise */
+            total_paise: number;
+            /** Wanted On */
+            wanted_on: string | null;
+        };
+        /** PackageIn */
+        PackageIn: {
+            /** Description */
+            description?: string | null;
+            /**
+             * Duration Hours
+             * @default 8
+             */
+            duration_hours: number;
+            /** Items */
+            items?: components["schemas"]["PackageItemIn"][];
+            /** Max Guests */
+            max_guests: number;
+            /** Name */
+            name: string;
+            /** Price Paise */
+            price_paise: number;
+            /**
+             * Start Time
+             * @default 10:00
+             */
+            start_time: string;
+            /**
+             * Tier
+             * @default custom
+             * @enum {string}
+             */
+            tier: "silver" | "gold" | "platinum" | "custom";
+        };
+        /** PackageItemIn */
+        PackageItemIn: {
+            /** Label */
+            label: string;
+            /** Vendor Slug */
+            vendor_slug?: string | null;
+        };
+        /** PackageItemOut */
+        PackageItemOut: {
+            /** Label */
+            label: string;
+            /** Vendor */
+            vendor: string | null;
+        };
+        /** PackageOut */
+        PackageOut: {
+            /**
+             * Business Id
+             * Format: uuid
+             */
+            business_id: string;
+            /** Description */
+            description: string | null;
+            /** Duration Hours */
+            duration_hours: number;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Items */
+            items: components["schemas"]["PackageItemOut"][];
+            /** Max Guests */
+            max_guests: number;
+            /** Name */
+            name: string;
+            /** Price Paise */
+            price_paise: number;
+            /** Start Time */
+            start_time: string;
+            /** Tier */
+            tier: string;
+        };
         /** PostCreate */
         PostCreate: {
             /** Caption */
@@ -2207,6 +2694,55 @@ export interface components {
             items: components["schemas"]["PostOut"][];
             /** Next Cursor */
             next_cursor: string | null;
+        };
+        /** ProductIn */
+        ProductIn: {
+            /**
+             * Active
+             * @default true
+             */
+            active: boolean;
+            /** Description */
+            description?: string | null;
+            /** Media Ids */
+            media_ids?: string[];
+            /** Name */
+            name: string;
+            /** Price Paise */
+            price_paise: number;
+            /** Sku */
+            sku?: string | null;
+            /** Stock */
+            stock: number;
+        };
+        /** ProductOut */
+        ProductOut: {
+            /** Active */
+            active: boolean;
+            /**
+             * Business Id
+             * Format: uuid
+             */
+            business_id: string;
+            /** Description */
+            description: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** In Stock */
+            in_stock: boolean;
+            /** Media */
+            media: components["schemas"]["AssetOut"][];
+            /** Name */
+            name: string;
+            /** Price Paise */
+            price_paise: number;
+            /** Sku */
+            sku: string | null;
+            /** Stock */
+            stock: number;
         };
         /** ProfileOut */
         ProfileOut: {
@@ -2697,6 +3233,30 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** VendorOut */
+        VendorOut: {
+            /** Organizer */
+            organizer: string;
+            /** Status */
+            status: string;
+            /** Terms */
+            terms: string | null;
+            /** Vendor */
+            vendor: string;
+        };
+        /** StatusIn */
+        app__modules__events__router__StatusIn: {
+            /** Status */
+            status: string;
+        };
+        /** StatusIn */
+        app__modules__shop__router__StatusIn: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "placed" | "confirmed" | "ready" | "shipped" | "delivered" | "cancelled";
         };
     };
     responses: never;
@@ -3568,6 +4128,71 @@ export interface operations {
             };
         };
     };
+    calendar_api_v1_businesses__business_id__calendar_get: {
+        parameters: {
+            query: {
+                start: string;
+                days?: number;
+            };
+            header?: never;
+            path: {
+                business_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HoldOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    organizer_bookings_api_v1_businesses__business_id__event_bookings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                business_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventBookingOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     set_hours_api_v1_businesses__business_id__hours_put: {
         parameters: {
             query?: never;
@@ -3590,6 +4215,171 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HoursOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    shop_orders_api_v1_businesses__business_id__orders_get: {
+        parameters: {
+            query?: {
+                status?: string | null;
+            };
+            header?: never;
+            path: {
+                business_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    packages_api_v1_businesses__business_id__packages_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                business_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PackageOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_package_api_v1_businesses__business_id__packages_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                business_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PackageIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PackageOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    catalog_api_v1_businesses__business_id__products_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                business_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_product_api_v1_businesses__business_id__products_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                business_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProductIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductOut"];
                 };
             };
             /** @description Validation Error */
@@ -3764,6 +4554,105 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SlotsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    answer_invite_api_v1_businesses__business_id__vendor_invites__organizer_slug___decision__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                business_id: string;
+                organizer_slug: string;
+                decision: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    vendors_api_v1_businesses__business_id__vendors_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                business_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    invite_vendor_api_v1_businesses__business_id__vendors_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                business_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InviteIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VendorOut"];
                 };
             };
             /** @description Validation Error */
@@ -4227,6 +5116,96 @@ export interface operations {
             };
         };
     };
+    book_api_v1_event_bookings_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EventBookingIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventBookingOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    mine_api_v1_event_bookings_mine_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventBookingOut"][];
+                };
+            };
+        };
+    };
+    set_status_api_v1_event_bookings__eb_id__status_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                eb_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["app__modules__events__router__StatusIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventBookingOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     home_feed_api_v1_feed_get: {
         parameters: {
             query?: {
@@ -4587,6 +5566,105 @@ export interface operations {
             };
         };
     };
+    place_order_api_v1_orders_post: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrderCreate"];
+            };
+        };
+        responses: {
+            /** @description Replay */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderOut"];
+                };
+            };
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_orders_api_v1_orders_mine_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderOut"][];
+                };
+            };
+        };
+    };
+    set_status_api_v1_orders__order_id__status_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                order_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["app__modules__shop__router__StatusIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     create_post_api_v1_posts_post: {
         parameters: {
             query?: never;
@@ -4883,6 +5961,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OkOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_product_api_v1_products__product_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProductIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductOut"];
                 };
             };
             /** @description Validation Error */

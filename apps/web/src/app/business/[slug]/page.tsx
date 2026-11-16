@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BookingWidget } from "@/features/booking/BookingWidget";
+import { PublicCommerce } from "@/features/business/PublicCommerce";
 import styles from "@/features/ui.module.css";
 import { serverGet } from "@/lib/api/server";
 import type { BusinessPublic, ReviewPage } from "@/lib/api/types";
@@ -49,7 +50,8 @@ export default async function BusinessPage({ params }: Params) {
         </p>
       </section>
 
-      <BookingWidget businessId={b.id} slug={b.slug} timezone={b.timezone} services={b.services} />
+      {b.services.length ? <BookingWidget businessId={b.id} slug={b.slug} timezone={b.timezone} services={b.services} /> : null}
+      <PublicCommerce businessId={b.id} slug={b.slug} />
 
       <section className={styles.card} aria-labelledby="services-title">
         <h2 id="services-title" className={styles.h2}>Services</h2>

@@ -1340,6 +1340,122 @@
         "title": "CsrfOut",
         "type": "object"
       },
+      "EventBookingIn": {
+        "additionalProperties": false,
+        "properties": {
+          "event_date": {
+            "format": "date",
+            "title": "Event Date",
+            "type": "string"
+          },
+          "guests": {
+            "maximum": 100000.0,
+            "minimum": 1.0,
+            "title": "Guests",
+            "type": "integer"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "package_id": {
+            "format": "uuid",
+            "title": "Package Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "package_id",
+          "event_date",
+          "guests"
+        ],
+        "title": "EventBookingIn",
+        "type": "object"
+      },
+      "EventBookingOut": {
+        "properties": {
+          "customer_id": {
+            "format": "uuid",
+            "title": "Customer Id",
+            "type": "string"
+          },
+          "event_date": {
+            "format": "date",
+            "title": "Event Date",
+            "type": "string"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "guests": {
+            "title": "Guests",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "organizer_id": {
+            "format": "uuid",
+            "title": "Organizer Id",
+            "type": "string"
+          },
+          "package_id": {
+            "format": "uuid",
+            "title": "Package Id",
+            "type": "string"
+          },
+          "package_name": {
+            "title": "Package Name",
+            "type": "string"
+          },
+          "payment_status": {
+            "title": "Payment Status",
+            "type": "string"
+          },
+          "price_paise": {
+            "title": "Price Paise",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "package_id",
+          "organizer_id",
+          "customer_id",
+          "package_name",
+          "event_date",
+          "guests",
+          "status",
+          "payment_status",
+          "price_paise",
+          "expires_at"
+        ],
+        "title": "EventBookingOut",
+        "type": "object"
+      },
       "GroupIn": {
         "additionalProperties": false,
         "properties": {
@@ -1433,6 +1549,42 @@
         "title": "HighlightOut",
         "type": "object"
       },
+      "HoldOut": {
+        "properties": {
+          "as_vendor": {
+            "title": "As Vendor",
+            "type": "boolean"
+          },
+          "ends_at": {
+            "format": "date-time",
+            "title": "Ends At",
+            "type": "string"
+          },
+          "event_booking_id": {
+            "format": "uuid",
+            "title": "Event Booking Id",
+            "type": "string"
+          },
+          "package_name": {
+            "title": "Package Name",
+            "type": "string"
+          },
+          "starts_at": {
+            "format": "date-time",
+            "title": "Starts At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "event_booking_id",
+          "starts_at",
+          "ends_at",
+          "package_name",
+          "as_vendor"
+        ],
+        "title": "HoldOut",
+        "type": "object"
+      },
       "HoursIn": {
         "properties": {
           "closes": {
@@ -1487,6 +1639,33 @@
           "closes"
         ],
         "title": "HoursOut",
+        "type": "object"
+      },
+      "InviteIn": {
+        "properties": {
+          "terms": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Terms"
+          },
+          "vendor_slug": {
+            "maxLength": 60,
+            "minLength": 3,
+            "title": "Vendor Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "vendor_slug"
+        ],
+        "title": "InviteIn",
         "type": "object"
       },
       "LiveResponse": {
@@ -1912,6 +2091,419 @@
         "title": "OkOut",
         "type": "object"
       },
+      "OrderCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "address": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "business_id": {
+            "format": "uuid",
+            "title": "Business Id",
+            "type": "string"
+          },
+          "fulfilment": {
+            "default": "pickup",
+            "enum": [
+              "pickup",
+              "delivery"
+            ],
+            "title": "Fulfilment",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OrderLine"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Items",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "wanted_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Bulk orders: the date the customer needs it",
+            "title": "Wanted On"
+          }
+        },
+        "required": [
+          "business_id",
+          "items"
+        ],
+        "title": "OrderCreate",
+        "type": "object"
+      },
+      "OrderItemOut": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "product_id": {
+            "format": "uuid",
+            "title": "Product Id",
+            "type": "string"
+          },
+          "qty": {
+            "title": "Qty",
+            "type": "integer"
+          },
+          "unit_price_paise": {
+            "title": "Unit Price Paise",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "product_id",
+          "name",
+          "unit_price_paise",
+          "qty"
+        ],
+        "title": "OrderItemOut",
+        "type": "object"
+      },
+      "OrderLine": {
+        "properties": {
+          "product_id": {
+            "format": "uuid",
+            "title": "Product Id",
+            "type": "string"
+          },
+          "qty": {
+            "maximum": 1000.0,
+            "minimum": 1.0,
+            "title": "Qty",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "product_id",
+          "qty"
+        ],
+        "title": "OrderLine",
+        "type": "object"
+      },
+      "OrderOut": {
+        "properties": {
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "business_id": {
+            "format": "uuid",
+            "title": "Business Id",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "customer_id": {
+            "format": "uuid",
+            "title": "Customer Id",
+            "type": "string"
+          },
+          "fulfilment": {
+            "title": "Fulfilment",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OrderItemOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "payment_status": {
+            "title": "Payment Status",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "total_paise": {
+            "title": "Total Paise",
+            "type": "integer"
+          },
+          "wanted_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wanted On"
+          }
+        },
+        "required": [
+          "id",
+          "business_id",
+          "customer_id",
+          "status",
+          "payment_status",
+          "total_paise",
+          "fulfilment",
+          "wanted_on",
+          "note",
+          "items",
+          "created_at"
+        ],
+        "title": "OrderOut",
+        "type": "object"
+      },
+      "PackageIn": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "duration_hours": {
+            "default": 8,
+            "maximum": 24.0,
+            "minimum": 1.0,
+            "title": "Duration Hours",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PackageItemIn"
+            },
+            "maxItems": 40,
+            "title": "Items",
+            "type": "array"
+          },
+          "max_guests": {
+            "maximum": 100000.0,
+            "minimum": 1.0,
+            "title": "Max Guests",
+            "type": "integer"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Name",
+            "type": "string"
+          },
+          "price_paise": {
+            "maximum": 10000000000.0,
+            "minimum": 0.0,
+            "title": "Price Paise",
+            "type": "integer"
+          },
+          "start_time": {
+            "default": "10:00",
+            "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+            "title": "Start Time",
+            "type": "string"
+          },
+          "tier": {
+            "default": "custom",
+            "enum": [
+              "silver",
+              "gold",
+              "platinum",
+              "custom"
+            ],
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "price_paise",
+          "max_guests"
+        ],
+        "title": "PackageIn",
+        "type": "object"
+      },
+      "PackageItemIn": {
+        "properties": {
+          "label": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "vendor_slug": {
+            "anyOf": [
+              {
+                "maxLength": 60,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vendor Slug"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "title": "PackageItemIn",
+        "type": "object"
+      },
+      "PackageItemOut": {
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "vendor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vendor"
+          }
+        },
+        "required": [
+          "label",
+          "vendor"
+        ],
+        "title": "PackageItemOut",
+        "type": "object"
+      },
+      "PackageOut": {
+        "properties": {
+          "business_id": {
+            "format": "uuid",
+            "title": "Business Id",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "duration_hours": {
+            "title": "Duration Hours",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PackageItemOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "max_guests": {
+            "title": "Max Guests",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "price_paise": {
+            "title": "Price Paise",
+            "type": "integer"
+          },
+          "start_time": {
+            "title": "Start Time",
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "business_id",
+          "name",
+          "tier",
+          "description",
+          "price_paise",
+          "max_guests",
+          "start_time",
+          "duration_hours",
+          "items"
+        ],
+        "title": "PackageOut",
+        "type": "object"
+      },
       "PostCreate": {
         "additionalProperties": false,
         "properties": {
@@ -2058,6 +2650,151 @@
           "next_cursor"
         ],
         "title": "PostPage",
+        "type": "object"
+      },
+      "ProductIn": {
+        "additionalProperties": false,
+        "properties": {
+          "active": {
+            "default": true,
+            "title": "Active",
+            "type": "boolean"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "media_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 8,
+            "title": "Media Ids",
+            "type": "array"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Name",
+            "type": "string"
+          },
+          "price_paise": {
+            "maximum": 100000000.0,
+            "minimum": 0.0,
+            "title": "Price Paise",
+            "type": "integer"
+          },
+          "sku": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sku"
+          },
+          "stock": {
+            "maximum": 1000000.0,
+            "minimum": 0.0,
+            "title": "Stock",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "price_paise",
+          "stock"
+        ],
+        "title": "ProductIn",
+        "type": "object"
+      },
+      "ProductOut": {
+        "properties": {
+          "active": {
+            "title": "Active",
+            "type": "boolean"
+          },
+          "business_id": {
+            "format": "uuid",
+            "title": "Business Id",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "in_stock": {
+            "title": "In Stock",
+            "type": "boolean"
+          },
+          "media": {
+            "items": {
+              "$ref": "#/components/schemas/AssetOut"
+            },
+            "title": "Media",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "price_paise": {
+            "title": "Price Paise",
+            "type": "integer"
+          },
+          "sku": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sku"
+          },
+          "stock": {
+            "title": "Stock",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "business_id",
+          "name",
+          "description",
+          "sku",
+          "price_paise",
+          "stock",
+          "in_stock",
+          "media",
+          "active"
+        ],
+        "title": "ProductOut",
         "type": "object"
       },
       "ProfileOut": {
@@ -3234,6 +3971,76 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "VendorOut": {
+        "properties": {
+          "organizer": {
+            "title": "Organizer",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "terms": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Terms"
+          },
+          "vendor": {
+            "title": "Vendor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "organizer",
+          "vendor",
+          "status",
+          "terms"
+        ],
+        "title": "VendorOut",
+        "type": "object"
+      },
+      "app__modules__events__router__StatusIn": {
+        "properties": {
+          "status": {
+            "pattern": "^(confirmed|cancelled|done)$",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "StatusIn",
+        "type": "object"
+      },
+      "app__modules__shop__router__StatusIn": {
+        "properties": {
+          "status": {
+            "enum": [
+              "placed",
+              "confirmed",
+              "ready",
+              "shipped",
+              "delivered",
+              "cancelled"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "StatusIn",
         "type": "object"
       }
     }
@@ -4504,6 +5311,122 @@
         ]
       }
     },
+    "/api/v1/businesses/{business_id}/calendar": {
+      "get": {
+        "operationId": "calendar_api_v1_businesses__business_id__calendar_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Business Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Start",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 31,
+              "maximum": 92,
+              "minimum": 1,
+              "title": "Days",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/HoldOut"
+                  },
+                  "title": "Response Calendar Api V1 Businesses  Business Id  Calendar Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Calendar",
+        "tags": [
+          "events"
+        ]
+      }
+    },
+    "/api/v1/businesses/{business_id}/event-bookings": {
+      "get": {
+        "operationId": "organizer_bookings_api_v1_businesses__business_id__event_bookings_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Business Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EventBookingOut"
+                  },
+                  "title": "Response Organizer Bookings Api V1 Businesses  Business Id  Event Bookings Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Organizer Bookings",
+        "tags": [
+          "events"
+        ]
+      }
+    },
     "/api/v1/businesses/{business_id}/hours": {
       "put": {
         "operationId": "set_hours_api_v1_businesses__business_id__hours_put",
@@ -4562,6 +5485,266 @@
         "summary": "Set Hours",
         "tags": [
           "business"
+        ]
+      }
+    },
+    "/api/v1/businesses/{business_id}/orders": {
+      "get": {
+        "operationId": "shop_orders_api_v1_businesses__business_id__orders_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Business Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^(placed|confirmed|ready|shipped|delivered|cancelled)$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/OrderOut"
+                  },
+                  "title": "Response Shop Orders Api V1 Businesses  Business Id  Orders Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Shop Orders",
+        "tags": [
+          "shop"
+        ]
+      }
+    },
+    "/api/v1/businesses/{business_id}/packages": {
+      "get": {
+        "operationId": "packages_api_v1_businesses__business_id__packages_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Business Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PackageOut"
+                  },
+                  "title": "Response Packages Api V1 Businesses  Business Id  Packages Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Packages",
+        "tags": [
+          "events"
+        ]
+      },
+      "post": {
+        "operationId": "create_package_api_v1_businesses__business_id__packages_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Business Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PackageIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Package",
+        "tags": [
+          "events"
+        ]
+      }
+    },
+    "/api/v1/businesses/{business_id}/products": {
+      "get": {
+        "operationId": "catalog_api_v1_businesses__business_id__products_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Business Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProductOut"
+                  },
+                  "title": "Response Catalog Api V1 Businesses  Business Id  Products Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Catalog",
+        "tags": [
+          "shop"
+        ]
+      },
+      "post": {
+        "operationId": "add_product_api_v1_businesses__business_id__products_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Business Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Add Product",
+        "tags": [
+          "shop"
         ]
       }
     },
@@ -4865,6 +6048,165 @@
         "summary": "Slots",
         "tags": [
           "booking"
+        ]
+      }
+    },
+    "/api/v1/businesses/{business_id}/vendor-invites/{organizer_slug}/{decision}": {
+      "post": {
+        "operationId": "answer_invite_api_v1_businesses__business_id__vendor_invites__organizer_slug___decision__post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Business Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "organizer_slug",
+            "required": true,
+            "schema": {
+              "title": "Organizer Slug",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "decision",
+            "required": true,
+            "schema": {
+              "title": "Decision",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Answer Invite",
+        "tags": [
+          "events"
+        ]
+      }
+    },
+    "/api/v1/businesses/{business_id}/vendors": {
+      "get": {
+        "operationId": "vendors_api_v1_businesses__business_id__vendors_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Business Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VendorOut"
+                  },
+                  "title": "Response Vendors Api V1 Businesses  Business Id  Vendors Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Vendors",
+        "tags": [
+          "events"
+        ]
+      },
+      "post": {
+        "operationId": "invite_vendor_api_v1_businesses__business_id__vendors_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Business Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Invite Vendor",
+        "tags": [
+          "events"
         ]
       }
     },
@@ -5534,6 +6876,138 @@
         ]
       }
     },
+    "/api/v1/event-bookings": {
+      "post": {
+        "operationId": "book_api_v1_event_bookings_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 80,
+              "minLength": 8,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventBookingIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventBookingOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Book",
+        "tags": [
+          "events"
+        ]
+      }
+    },
+    "/api/v1/event-bookings/mine": {
+      "get": {
+        "operationId": "mine_api_v1_event_bookings_mine_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EventBookingOut"
+                  },
+                  "title": "Response Mine Api V1 Event Bookings Mine Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Mine",
+        "tags": [
+          "events"
+        ]
+      }
+    },
+    "/api/v1/event-bookings/{eb_id}/status": {
+      "post": {
+        "operationId": "set_status_api_v1_event_bookings__eb_id__status_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "eb_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Eb Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/app__modules__events__router__StatusIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventBookingOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Status",
+        "tags": [
+          "events"
+        ]
+      }
+    },
     "/api/v1/feed": {
       "get": {
         "operationId": "home_feed_api_v1_feed_get",
@@ -6074,6 +7548,148 @@
         ]
       }
     },
+    "/api/v1/orders": {
+      "post": {
+        "operationId": "place_order_api_v1_orders_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 80,
+              "minLength": 8,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderOut"
+                }
+              }
+            },
+            "description": "Replay"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Place Order",
+        "tags": [
+          "shop"
+        ]
+      }
+    },
+    "/api/v1/orders/mine": {
+      "get": {
+        "operationId": "my_orders_api_v1_orders_mine_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/OrderOut"
+                  },
+                  "title": "Response My Orders Api V1 Orders Mine Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "My Orders",
+        "tags": [
+          "shop"
+        ]
+      }
+    },
+    "/api/v1/orders/{order_id}/status": {
+      "post": {
+        "operationId": "set_status_api_v1_orders__order_id__status_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "order_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Order Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/app__modules__shop__router__StatusIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Status",
+        "tags": [
+          "shop"
+        ]
+      }
+    },
     "/api/v1/posts": {
       "post": {
         "operationId": "create_post_api_v1_posts_post",
@@ -6495,6 +8111,59 @@
         "summary": "Save",
         "tags": [
           "posts"
+        ]
+      }
+    },
+    "/api/v1/products/{product_id}": {
+      "put": {
+        "operationId": "update_product_api_v1_products__product_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Product Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Product",
+        "tags": [
+          "shop"
         ]
       }
     },

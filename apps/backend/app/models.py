@@ -9,12 +9,14 @@ from app.modules.booking.models import Booking, BookingStatusHistory
 from app.modules.business.models import Business, BusinessHours, Resource, Service
 from app.modules.cards.models import Card, CardTemplate
 from app.modules.chat.service import Conversation, Member, Message
+from app.modules.events.service import EventBooking, Hold, Package, PackageItem, VendorLink
 from app.modules.media.models import Asset
 from app.modules.moderation.service import Report
 from app.modules.notifications.models import Notification
 from app.modules.posts.models import Comment, Like, Post, PostHashtag, Save
 from app.modules.referrals.models import PointsEntry, Referral, ReferralCode
 from app.modules.reviews.models import Review
+from app.modules.shop.service import Order, OrderItem, OrderStatusHistory, Product
 from app.modules.social.models import Block, Follow, Mute, Profile
 from app.modules.stories.service import Highlight, HighlightItem, Story, StoryView
 
@@ -34,20 +36,28 @@ __all__ = [
     "Comment",
     "Conversation",
     "DeadLetter",
+    "EventBooking",
     "Follow",
     "Highlight",
     "HighlightItem",
+    "Hold",
     "Like",
     "LoginEvent",
     "Member",
     "Message",
     "Mute",
     "Notification",
+    "Order",
+    "OrderItem",
+    "OrderStatusHistory",
     "OutboxEvent",
+    "Package",
+    "PackageItem",
     "PointsEntry",
     "Post",
     "PostHashtag",
     "ProcessedEvent",
+    "Product",
     "Profile",
     "Referral",
     "ReferralCode",
@@ -60,4 +70,5 @@ __all__ = [
     "Story",
     "StoryView",
     "User",
+    "VendorLink",
 ]

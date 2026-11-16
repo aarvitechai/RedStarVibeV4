@@ -17,6 +17,7 @@ TASK_MODULES = [
     "app.modules.media.tasks",
     "app.modules.cards.tasks",
     "app.modules.albums.tasks",
+    "app.modules.events.tasks",
 ]
 
 celery_app = Celery("redstarvibe", broker=settings.redis_url, backend=None, include=TASK_MODULES)
@@ -38,5 +39,6 @@ celery_app.conf.update(
         "outbox-relay": {"task": "outbox.relay", "schedule": 2.0, "options": {"expires": 10}},
         "booking-reminders": {"task": "booking.send_reminders", "schedule": 60.0, "options": {"expires": 50}},
         "booking-expiry": {"task": "booking.expire_stale", "schedule": 300.0, "options": {"expires": 250}},
+        "event-hold-expiry": {"task": "events.expire_holds", "schedule": 600.0, "options": {"expires": 550}},
     },
 )

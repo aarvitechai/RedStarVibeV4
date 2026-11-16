@@ -9,6 +9,7 @@ import { ApiError, api, fieldErrors } from "@/lib/api/client";
 import type { Booking, BusinessOwnerView, Service } from "@/lib/api/types";
 import { WEEKDAYS, dayLabel, hhmm, isoDateIn, rupees, timeIn } from "@/lib/format";
 import styles from "@/features/ui.module.css";
+import { EventsPanel, ShopPanel } from "./CommercePanels";
 
 const CATEGORIES = ["electrician", "plumber", "welder", "driver", "carpenter", "painter", "beauty", "tailor", "tutor",
   "home_food", "bakery", "shop", "photographer", "event", "other"] as const;
@@ -123,6 +124,8 @@ function Manage({ biz, onChange }: { biz: BusinessOwnerView; onChange: () => voi
         <p className={styles.muted}>Print this QR for your shop counter.</p>
       </section>
       <BookingsPanel biz={biz} />
+      <ShopPanel biz={biz} />
+      <EventsPanel biz={biz} />
       <ServicesPanel biz={biz} onChange={onChange} />
       <HoursPanel biz={biz} onChange={onChange} />
     </>
