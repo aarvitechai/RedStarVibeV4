@@ -10,7 +10,11 @@ Go-to-market: launch in one city with 2–3 trades, and onboard 20–30 real bus
 
 ## Repository state (read first)
 
-This repo currently holds **only planning documents. There is no application code yet.**
+Phase 0 is complete. The repo holds the monorepo skeleton: a FastAPI app with health checks, the error shape and settings; a Next.js 16 app with the CSP nonce and design tokens; Docker Compose; CI; and ADRs 0001–0017. **No domain features exist yet.** Always check `docs/STATUS.md` (verified feature status) and `docs/audit/phase-0-audit.md` first.
+
+ADR 0017 applies: the Blueprint's "already built" features are not in this repo, so accounts and auth are built in Phase 1.
+
+Planning documents:
 
 | File | Role |
 |---|---|
@@ -159,9 +163,9 @@ Existing tables stay in the `public` schema, and each new module gets its own Po
 - Ship Hindi and English from day one.
 - Design tokens: Star Red `#C8102E` (dark `#9B0C23`, soft `#FDF2F3`), fonts Plus Jakarta Sans + Noto Sans Devanagari, 4 px spacing grid. No raw colors or sizes in pages.
 
-## Commands (planned, not yet in repo)
+## Commands
 
-The Blueprint defines these commands. Check the Makefile and scripts before you rely on them. If a command doesn't exist, document the real equivalent instead of inventing one.
+These exist in the `Makefile` (see `docs/setup.md` for running without make). `seed`, `e2e` and `load` gain real content as their phases land.
 
 ```
 python scripts/bootstrap_env.py   # first run: writes .env with fresh secrets

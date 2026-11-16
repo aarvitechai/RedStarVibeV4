@@ -1,0 +1,13 @@
+{
+  "name": "@rsv/api-types",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TypeScript types generated from the FastAPI OpenAPI schema. Do not edit index.ts by hand.",
+  "types": "index.ts",
+  "scripts": {
+    "generate": "openapi-typescript openapi.json -o index.ts"
+  },
+  "devDependencies": {
+    "openapi-typescript": "7.13.0"
+  }
+}

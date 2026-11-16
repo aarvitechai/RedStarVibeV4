@@ -1,0 +1,31 @@
+.main {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6) var(--space-4);
+}
+.card {
+  width: 100%;
+  max-width: 560px;
+  text-align: center;
+}
+.brand {
+  color: var(--color-primary);
+  font-size: var(--text-48);
+  font-weight: 800;
+  margin: 0 0 var(--space-2);
+  letter-spacing: -0.02em;
+}
+.tagline {
+  font-size: var(--text-22);
+  margin: 0 0 var(--space-6);
+}
+.status {
+  display: inline-block;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-size: var(--text-14);
+  font-weight: 600;
+}

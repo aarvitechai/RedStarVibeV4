@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /apps/backend
+    schedule: { interval: weekly }
+    target-branch: dev
+  - package-ecosystem: npm
+    directory: /apps/web
+    schedule: { interval: weekly }
+    target-branch: dev
+  - package-ecosystem: npm
+    directory: /packages/api-types
+    schedule: { interval: monthly }
+    target-branch: dev
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }
+    target-branch: dev
+  - package-ecosystem: docker
+    directory: /apps/backend
+    schedule: { interval: monthly }
+    target-branch: dev

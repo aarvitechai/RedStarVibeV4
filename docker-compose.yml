@@ -1,0 +1,102 @@
+# Same compose file for local, staging and the Stage 1 VM; only .env differs (Blueprint 19.2).
+# Open http://localhost:8080 — all traffic goes through the nginx gateway, as in production.
+
+x-backend: &backend
+  build: ./apps/backend
+  image: ghcr.io/aarvitechai/redstarvibe-backend:${RSV_IMAGE_TAG:-local}
+  env_file: .env
+  restart: unless-stopped
+  networks: [private]
+  depends_on:
+    db: { condition: service_healthy }
+    redis: { condition: service_healthy }
+
+services:
+  gateway:
+    image: nginx:1.27-alpine
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks: [public, private]
+    depends_on: [api, web]
+    restart: unless-stopped
+
+  web:
+    build: ./apps/web
+    image: ghcr.io/aarvitechai/redstarvibe-web:${RSV_IMAGE_TAG:-local}
+    environment:
+      NEXT_PUBLIC_MEDIA_ORIGIN: ${RSV_MEDIA_ORIGIN:-}
+    networks: [private]
+    restart: unless-stopped
+    mem_limit: 512m
+
+  migrate:
+    <<: *backend
+    command: ["alembic", "upgrade", "head"]
+    restart: "no"
+
+  api:
+    <<: *backend
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/health/live')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    mem_limit: 768m
+
+  worker:
+    <<: *backend
+    command: ["celery", "-A", "app.workers.celery_app", "worker", "-Q", "default,media,ai", "--concurrency", "2", "--loglevel", "INFO"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    mem_limit: 768m
+
+  beat:
+    <<: *backend
+    # Exactly one beat process (ADR 0001 / Blueprint 6.2).
+    command: ["celery", "-A", "app.workers.celery_app", "beat", "--loglevel", "INFO", "--schedule", "/tmp/celerybeat-schedule"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    mem_limit: 256m
+
+  db:
+    build: ./infra/docker/postgres
+    image: redstarvibe-postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-rsv}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run python scripts/bootstrap_env.py first}
+      POSTGRES_DB: ${POSTGRES_DB:-rsv}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [private]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - redisdata:/data
+    networks: [private]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+networks:
+  public: {}
+  private:
+    internal: false   # set true on servers once outbound access is proxied; db/redis never publish ports
+
+volumes:
+  pgdata: {}
+  redisdata: {}
