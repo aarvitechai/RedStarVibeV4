@@ -28,7 +28,7 @@ BACKEND = Path(__file__).resolve().parent.parent
 
 
 # Reference data seeded by migrations; kept between tests.
-SEED_TABLES = {"cards.templates", "shop.categories"}
+SEED_TABLES = {"cards.templates", "payments.plans"}
 
 
 def _all_tables() -> str:

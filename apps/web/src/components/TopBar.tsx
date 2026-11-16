@@ -15,6 +15,7 @@ export function TopBar() {
         <Link href="/cards" className={styles.navLink}>Cards</Link>
         <Link href="/albums" className={styles.navLink}>Albums</Link>
         <Link href="/notifications" className={styles.navLink}>Notifications</Link>
+        <Link href="/plans" className={styles.navLink}>Plans</Link>
         <Link href="/account" className={styles.navLink}>Account</Link>
       </nav>
     </header>

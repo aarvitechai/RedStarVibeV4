@@ -33,6 +33,7 @@ from app.modules.events.router import router as events_router  # noqa: E402
 from app.modules.media.router import router as media_router  # noqa: E402
 from app.modules.moderation.router import router as moderation_router  # noqa: E402
 from app.modules.notifications.router import router as notifications_router  # noqa: E402
+from app.modules.payments.router import router as payments_router  # noqa: E402
 from app.modules.posts.router import router as posts_router  # noqa: E402
 from app.modules.referrals.router import router as referrals_router  # noqa: E402
 from app.modules.reviews.router import router as reviews_router  # noqa: E402
@@ -58,5 +59,6 @@ for _r in (
     moderation_router,
     events_router,
     shop_router,
+    payments_router,
 ):
     api_router.include_router(_r)

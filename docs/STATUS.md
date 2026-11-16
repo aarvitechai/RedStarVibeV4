@@ -1,7 +1,7 @@
 # RedStarVibe Project Status
 
 Updated: 2026-11-16
-Current phase: Phase 5 — events and shop (code complete locally)
+Current phase: Phase 6 — money (code complete locally, sandbox provider)
 Release: none deployed. Local stack verified at http://localhost:8090 (see `docs/setup.md`).
 
 ## Phase status
@@ -11,7 +11,7 @@ Release: none deployed. Local stack verified at http://localhost:8090 (see `docs
 - [ ] Phase 3 — Viral growth — code done; exit criterion (10% of actives share weekly) needs real users
 - [ ] Phase 4 — Social complete — code done; exit criterion (Day-7 retention improving) needs real users
 - [ ] Phase 5 — Events and shop — code done; exit criterion (5 event companies + 10 shops live) needs pilot
-- [ ] Phase 6 — Money
+- [ ] Phase 6 — Money — code done with sandbox; real Razorpay needs keys + webhook URL; exit needs first real paid plan
 - [ ] Phase 7 — Calls and AI plus
 - [ ] Phase 8 — Scale (metrics-triggered)
 
@@ -103,6 +103,20 @@ Release: none deployed. Local stack verified at http://localhost:8090 (see `docs
 | Unpaid holds expire after 48 h (beat); cancellation releases holds; advance payment locks the date (Phase 6) | done | `test_event_booking_rules_idempotency_and_release` |
 | Web: shop + order management and packages/vendors/event bookings in dashboard; cart + package booking on public page; My orders | done | build passes |
 | Returns/delivery policy pages, vendor disputes process, shipping integration | **open** | operational policy needed |
+
+## Phase 6 checklist
+| Item | Status | Evidence |
+|---|---|---|
+| Payment intents: amount computed server-side (client cannot send one), Idempotency-Key, reuse of open intent, ownership | done | `tests/test_phase6_payments.py` |
+| Razorpay adapter (orders, payments lookup, refunds, HMAC webhook verify, bounded retries, 5 s timeout); sandbox provider locally, refused in staging/prod | done | code; sandbox exercised by tests |
+| Only verified webhooks mark paid; unique provider event id (duplicates ignored); amount mismatch never marks paid; payload redacted | done | webhook tests |
+| Reconciliation job every 15 min recovers lost webhooks | done | `test_reconciliation_recovers_a_lost_webhook` |
+| Append-only ledger (charge, platform fee 2% orders / 5% events, refunds), payout summary per business | done | ledger + payout tests |
+| Refunds (full/partial) by business owner or admin, audited | done | `test_refund_by_owner_only` |
+| Event advance (20%) locks the date (hold no longer expires) | done | `test_advance_payment_locks_event_date` |
+| Plans as data (Free/Premium/Creator/Business) + subscriptions + entitlements (AI quota source) | done | `test_subscription_sets_entitlements` |
+| Web: checkout page (sandbox + Razorpay Checkout), plans page, pay buttons on My orders | done | build passes |
+| Razorpay live keys, webhook URL registration, Route payouts, GST invoices, boosts/promotion, creator tips | **open** | needs accounts + legal/accounting review |
 
 ## Verified features
 | Feature | Status | Evidence / test | Owner |

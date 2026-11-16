@@ -12,6 +12,8 @@ export function buildCsp(nonce: string, isDev: boolean): string {
     "font-src": ["'self'"],
     // CSP3 'self' covers same-origin ws:/wss: (our /ws); dev adds ws: for hot reload.
     "connect-src": ["'self'", ...(isDev ? ["ws:"] : [])],
+    // Razorpay Checkout (Phase 6) and LiveKit (Phase 7) are the only third-party origins.
+    "frame-src": ["https://api.razorpay.com", "https://checkout.razorpay.com"],
     "frame-ancestors": ["'none'"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],

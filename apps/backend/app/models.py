@@ -13,6 +13,7 @@ from app.modules.events.service import EventBooking, Hold, Package, PackageItem,
 from app.modules.media.models import Asset
 from app.modules.moderation.service import Report
 from app.modules.notifications.models import Notification
+from app.modules.payments.service import LedgerEntry, Payment, Plan, Subscription, WebhookEvent
 from app.modules.posts.models import Comment, Like, Post, PostHashtag, Save
 from app.modules.referrals.models import PointsEntry, Referral, ReferralCode
 from app.modules.reviews.models import Review
@@ -41,6 +42,7 @@ __all__ = [
     "Highlight",
     "HighlightItem",
     "Hold",
+    "LedgerEntry",
     "Like",
     "LoginEvent",
     "Member",
@@ -53,6 +55,8 @@ __all__ = [
     "OutboxEvent",
     "Package",
     "PackageItem",
+    "Payment",
+    "Plan",
     "PointsEntry",
     "Post",
     "PostHashtag",
@@ -69,6 +73,8 @@ __all__ = [
     "Session",
     "Story",
     "StoryView",
+    "Subscription",
     "User",
     "VendorLink",
+    "WebhookEvent",
 ]
