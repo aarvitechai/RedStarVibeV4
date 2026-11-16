@@ -14,7 +14,8 @@ type Frame =
   | { type: "hello" | "ping" }
   | { type: "message.new"; message: ChatMessage }
   | { type: "typing"; conversation_id: string; user_id: string }
-  | { type: "receipt.read"; conversation_id: string; user_id: string; seq: number };
+  | { type: "receipt.read"; conversation_id: string; user_id: string; seq: number }
+  | { type: "call.ringing"; conversation_id: string; from: string };
 
 /**
  * Live chat. Messages are persisted by REST first; the WebSocket only pushes. On (re)connect we fetch
@@ -29,6 +30,7 @@ export function Messages() {
   const [msgs, setMsgs] = useState<ChatMessage[]>([]);
   const [typing, setTyping] = useState<string | null>(null);
   const [online, setOnline] = useState(false);
+  const [ringing, setRinging] = useState<{ conversation_id: string; from: string } | null>(null);
   const lastSeq = useRef(0);
   const activeRef = useRef(active);
   useEffect(() => {
@@ -84,6 +86,7 @@ export function Messages() {
           if (f.message.conversation_id === activeRef.current) void catchUp(f.message.conversation_id);
           void loadConvs();
         }
+        if (f.type === "call.ringing") setRinging({ conversation_id: f.conversation_id, from: f.from });
         if (f.type === "typing" && f.conversation_id === activeRef.current) {
           setTyping(f.user_id);
           setTimeout(() => setTyping(null), 3000);
@@ -132,6 +135,13 @@ export function Messages() {
           </button>
         ))}
       </div>
+      {ringing ? (
+        <div className={styles.success} role="alert">
+          {ringing.from} is calling you.{" "}
+          <Button size="sm" onClick={() => router.push(`/call/${ringing.conversation_id}?answer=1`)}>Join</Button>{" "}
+          <Button size="sm" variant="ghost" onClick={() => setRinging(null)}>Dismiss</Button>
+        </div>
+      ) : null}
       {convs.length === 0 ? <p className={styles.empty}>No conversations yet. Open a profile and tap Message.</p> : null}
       {conv ? (
         <>
@@ -156,6 +166,7 @@ export function Messages() {
             <input name="body" maxLength={4000} placeholder="Message" className={styles.select} onInput={onType} aria-label="Message" autoComplete="off" />
             <Button type="submit">Send</Button>
             <VoiceNote convId={conv.id} onSent={() => void catchUp(conv.id)} />
+            <Button type="button" variant="secondary" onClick={() => router.push(`/call/${conv.id}`)}>📞 Call</Button>
           </form>
         </>
       ) : null}

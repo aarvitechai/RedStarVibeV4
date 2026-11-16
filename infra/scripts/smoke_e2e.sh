@@ -105,4 +105,21 @@ wait "$WSPID" || true
 echo "17. realtime chat over WebSocket: $(tr '
 ' ' ' < "$TMP/ws.out")"
 echo "18. pages: feed $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/feed") profile $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/owner$RUN") post $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/p/$P1") messages $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/messages")"
+
+# ---- Phase 5-7: shop order, sandbox payment, search, assistant, MCP, calls ----
+PROD="$(post "$OWNER" "$OT" -d '{"name":"Ceiling fan 1200mm","price_paise":249900,"stock":5}' "$BASE/api/v1/businesses/$BIZ/products" | json "d['id']")"
+ORD="$(post "$CUST" "$CT" -H "Idempotency-Key: smoke-order-$RUN" -d "{\"business_id\":\"$BIZ\",\"items\":[{\"product_id\":\"$PROD\",\"qty\":2}]}" "$BASE/api/v1/orders" | json "d['id']+' '+str(d['total_paise'])")"
+echo "19. order placed (stock decremented atomically): $ORD"
+PAY="$(post "$CUST" "$CT" -H "Idempotency-Key: smoke-pay-$RUN" -d "{\"purpose\":\"order\",\"reference_id\":\"${ORD%% *}\"}" "$BASE/api/v1/payments/intents" | json "d['payment_id']+' '+str(d['amount_paise'])")"
+post "$CUST" "$CT" -X POST "$BASE/api/v1/payments/${PAY%% *}/sandbox-complete" >/dev/null
+echo "20. payment (server amount ${PAY#* } paise) confirmed via signed webhook: $(curl -fsS -b "$CUST" "$BASE/api/v1/orders/mine" | json "d[0]['payment_status']"); payout due $(curl -fsS -b "$OWNER" "$BASE/api/v1/businesses/$BIZ/payouts" | json "d['due_paise']") paise"
+i=0; while [ "$i" -lt 20 ]; do H="$(curl -fsS "$BASE/api/v1/search?q=fans" | json "len(d)")"; [ "$H" -ge 1 ] && break; i=$((i + 1)); sleep 1; done
+echo "21. hybrid search 'fans': $H hit(s): $(curl -fsS "$BASE/api/v1/search?q=fans" | json "', '.join(h['kind']+':'+h['title'] for h in d)")"
+echo "22. assistant: $(post "$CUST" "$CT" -d '{"question":"how do refunds work?"}' "$BASE/api/v1/ai/assistant" | json "d['mode']+' -> '+d['citations'][0]['url']")"
+TOKEN="$(post "$OWNER" "$OT" -d '{"label":"smoke","scopes":["read","write:drafts"]}' "$BASE/api/v1/mcp-tokens" | json "d['token']")"
+echo "23. MCP tools: $(curl -fsS -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' "$BASE/mcp" | json "','.join(t['name'] for t in d['result']['tools'])")"
+echo "24. MCP get_bookings: $(curl -fsS -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_bookings","arguments":{}}}' "$BASE/mcp" | json "__import__('json').loads(d['result']['content'][0]['text'])['businesses'][0]['business']")"
+CALL="$(post "$CUST" "$CT" -X POST "$BASE/api/v1/calls/$CONV/token" | json "d['url']+' room '+d['room']")"
+echo "25. call token issued for LiveKit: $CALL; LiveKit server: $(curl -s -o "$TMP/dl" -w '%{http_code}' http://127.0.0.1:${LIVEKIT_PORT:-7880}/)"
+echo "26. pages: assistant $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/assistant") search $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/search?q=fan") help $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/help") plans $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/plans") orders $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/orders")"
 echo "SMOKE PASSED — open $BASE/business/sharma-$RUN"

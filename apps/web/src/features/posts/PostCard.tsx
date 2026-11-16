@@ -60,6 +60,8 @@ export function PostCard({ post: initial, onDeleted, meId }: { post: Post; onDel
     const form = e.currentTarget;
     const body = String(new FormData(form).get("body") ?? "").trim();
     if (!body) return;
+    const check = await api<{ warn: boolean; message: string | null }>("/api/v1/ai/comment-check", { method: "POST", body: JSON.stringify({ text: body }) }).catch(() => null);
+    if (check?.warn && !confirm(`${check.message ?? "This might hurt someone."} Post anyway?`)) return;
     try {
       const c = await api<Comment>(`/api/v1/posts/${post.id}/comments`, { method: "POST", body: JSON.stringify({ body }) });
       setComments((cs) => [...(cs ?? []), c]);

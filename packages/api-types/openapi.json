@@ -132,6 +132,53 @@
         "title": "AlbumPage",
         "type": "object"
       },
+      "AnswerOut": {
+        "properties": {
+          "answer": {
+            "title": "Answer",
+            "type": "string"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/components/schemas/Citation"
+            },
+            "title": "Citations",
+            "type": "array"
+          },
+          "grounded": {
+            "title": "Grounded",
+            "type": "boolean"
+          },
+          "mode": {
+            "title": "Mode",
+            "type": "string"
+          }
+        },
+        "required": [
+          "answer",
+          "citations",
+          "grounded",
+          "mode"
+        ],
+        "title": "AnswerOut",
+        "type": "object"
+      },
+      "AskIn": {
+        "additionalProperties": false,
+        "properties": {
+          "question": {
+            "maxLength": 500,
+            "minLength": 2,
+            "title": "Question",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "title": "AskIn",
+        "type": "object"
+      },
       "AssetOut": {
         "properties": {
           "duration_s": {
@@ -1080,6 +1127,107 @@
         "title": "BusinessUpdate",
         "type": "object"
       },
+      "CallToken": {
+        "properties": {
+          "expires_in_s": {
+            "title": "Expires In S",
+            "type": "integer"
+          },
+          "room": {
+            "title": "Room",
+            "type": "string"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "token",
+          "room",
+          "expires_in_s"
+        ],
+        "title": "CallToken",
+        "type": "object"
+      },
+      "CaptionIn": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Id"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "title": "CaptionIn",
+        "type": "object"
+      },
+      "CaptionOut": {
+        "properties": {
+          "alt_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alt Text"
+          },
+          "caption": {
+            "title": "Caption",
+            "type": "string"
+          },
+          "hashtags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Hashtags",
+            "type": "array"
+          },
+          "source": {
+            "enum": [
+              "ai",
+              "rules"
+            ],
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "caption",
+          "hashtags",
+          "alt_text",
+          "source"
+        ],
+        "title": "CaptionOut",
+        "type": "object"
+      },
       "CardCreate": {
         "additionalProperties": false,
         "properties": {
@@ -1196,6 +1344,74 @@
           "created_at"
         ],
         "title": "CardOut",
+        "type": "object"
+      },
+      "Citation": {
+        "properties": {
+          "n": {
+            "title": "N",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "n",
+          "title",
+          "url"
+        ],
+        "title": "Citation",
+        "type": "object"
+      },
+      "CommentCheckIn": {
+        "properties": {
+          "text": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "CommentCheckIn",
+        "type": "object"
+      },
+      "CommentCheckOut": {
+        "properties": {
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "score": {
+            "title": "Score",
+            "type": "number"
+          },
+          "warn": {
+            "title": "Warn",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "warn",
+          "score",
+          "message"
+        ],
+        "title": "CommentCheckOut",
         "type": "object"
       },
       "CommentIn": {
@@ -1338,6 +1554,70 @@
           "csrf_token"
         ],
         "title": "CsrfOut",
+        "type": "object"
+      },
+      "DraftOut": {
+        "properties": {
+          "caption": {
+            "title": "Caption",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "caption",
+          "created_at"
+        ],
+        "title": "DraftOut",
+        "type": "object"
+      },
+      "Entitlements": {
+        "properties": {
+          "ai_calls_per_day": {
+            "title": "Ai Calls Per Day",
+            "type": "integer"
+          },
+          "features": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Features",
+            "type": "array"
+          },
+          "plan": {
+            "title": "Plan",
+            "type": "string"
+          },
+          "renews_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Renews At"
+          }
+        },
+        "required": [
+          "plan",
+          "ai_calls_per_day",
+          "features",
+          "renews_at"
+        ],
+        "title": "Entitlements",
         "type": "object"
       },
       "EventBookingIn": {
@@ -1495,6 +1775,29 @@
         "title": "HTTPValidationError",
         "type": "object"
       },
+      "HelpArticle": {
+        "properties": {
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "body"
+        ],
+        "title": "HelpArticle",
+        "type": "object"
+      },
       "HighlightIn": {
         "additionalProperties": false,
         "properties": {
@@ -1641,6 +1944,83 @@
         "title": "HoursOut",
         "type": "object"
       },
+      "IntentIn": {
+        "additionalProperties": false,
+        "properties": {
+          "purpose": {
+            "enum": [
+              "order",
+              "event_booking",
+              "subscription"
+            ],
+            "title": "Purpose",
+            "type": "string"
+          },
+          "reference_id": {
+            "description": "Order id, event booking id, or plan code",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Reference Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "purpose",
+          "reference_id"
+        ],
+        "title": "IntentIn",
+        "type": "object"
+      },
+      "IntentOut": {
+        "properties": {
+          "amount_paise": {
+            "title": "Amount Paise",
+            "type": "integer"
+          },
+          "checkout_url": {
+            "title": "Checkout Url",
+            "type": "string"
+          },
+          "currency": {
+            "const": "INR",
+            "default": "INR",
+            "title": "Currency",
+            "type": "string"
+          },
+          "payment_id": {
+            "format": "uuid",
+            "title": "Payment Id",
+            "type": "string"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "provider_order_id": {
+            "title": "Provider Order Id",
+            "type": "string"
+          },
+          "public_key": {
+            "title": "Public Key",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "payment_id",
+          "amount_paise",
+          "provider",
+          "provider_order_id",
+          "public_key",
+          "checkout_url",
+          "status"
+        ],
+        "title": "IntentOut",
+        "type": "object"
+      },
       "InviteIn": {
         "properties": {
           "terms": {
@@ -1666,6 +2046,40 @@
           "vendor_slug"
         ],
         "title": "InviteIn",
+        "type": "object"
+      },
+      "ListingIn": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "maxLength": 40,
+            "title": "Category",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 2,
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "required": [
+          "name",
+          "category"
+        ],
+        "title": "ListingIn",
         "type": "object"
       },
       "LiveResponse": {
@@ -2504,6 +2918,144 @@
         "title": "PackageOut",
         "type": "object"
       },
+      "PaymentOut": {
+        "properties": {
+          "amount_paise": {
+            "title": "Amount Paise",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "paid_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paid At"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "purpose": {
+            "title": "Purpose",
+            "type": "string"
+          },
+          "reference_id": {
+            "title": "Reference Id",
+            "type": "string"
+          },
+          "refunded_paise": {
+            "title": "Refunded Paise",
+            "type": "integer"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "purpose",
+          "reference_id",
+          "amount_paise",
+          "status",
+          "provider",
+          "refunded_paise",
+          "created_at",
+          "paid_at"
+        ],
+        "title": "PaymentOut",
+        "type": "object"
+      },
+      "PayoutSummary": {
+        "properties": {
+          "business_id": {
+            "format": "uuid",
+            "title": "Business Id",
+            "type": "string"
+          },
+          "due_paise": {
+            "title": "Due Paise",
+            "type": "integer"
+          },
+          "fees_paise": {
+            "title": "Fees Paise",
+            "type": "integer"
+          },
+          "gross_paise": {
+            "title": "Gross Paise",
+            "type": "integer"
+          },
+          "paid_out_paise": {
+            "title": "Paid Out Paise",
+            "type": "integer"
+          },
+          "refunds_paise": {
+            "title": "Refunds Paise",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "business_id",
+          "gross_paise",
+          "fees_paise",
+          "refunds_paise",
+          "paid_out_paise",
+          "due_paise"
+        ],
+        "title": "PayoutSummary",
+        "type": "object"
+      },
+      "PlanOut": {
+        "properties": {
+          "ai_calls_per_day": {
+            "title": "Ai Calls Per Day",
+            "type": "integer"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "features": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Features",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "price_paise": {
+            "title": "Price Paise",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "price_paise",
+          "ai_calls_per_day",
+          "features"
+        ],
+        "title": "PlanOut",
+        "type": "object"
+      },
       "PostCreate": {
         "additionalProperties": false,
         "properties": {
@@ -3008,6 +3560,24 @@
         "title": "ReferralSummary",
         "type": "object"
       },
+      "RefundIn": {
+        "properties": {
+          "amount_paise": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount Paise"
+          }
+        },
+        "title": "RefundIn",
+        "type": "object"
+      },
       "ReplyIn": {
         "additionalProperties": false,
         "properties": {
@@ -3368,6 +3938,44 @@
           "role"
         ],
         "title": "RoleChange",
+        "type": "object"
+      },
+      "SearchHit": {
+        "properties": {
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "score": {
+            "title": "Score",
+            "type": "number"
+          },
+          "snippet": {
+            "title": "Snippet",
+            "type": "string"
+          },
+          "source_id": {
+            "title": "Source Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "source_id",
+          "title",
+          "snippet",
+          "score",
+          "url"
+        ],
+        "title": "SearchHit",
         "type": "object"
       },
       "ServiceIn": {
@@ -3735,6 +4343,20 @@
         "title": "StoryOut",
         "type": "object"
       },
+      "SubtitlesIn": {
+        "properties": {
+          "asset_id": {
+            "format": "uuid",
+            "title": "Asset Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "asset_id"
+        ],
+        "title": "SubtitlesIn",
+        "type": "object"
+      },
       "TemplateOut": {
         "properties": {
           "id": {
@@ -3774,6 +4396,116 @@
           "preview"
         ],
         "title": "TemplateOut",
+        "type": "object"
+      },
+      "TextOut": {
+        "properties": {
+          "source": {
+            "enum": [
+              "ai",
+              "rules",
+              "unavailable"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "source"
+        ],
+        "title": "TextOut",
+        "type": "object"
+      },
+      "TokenIn": {
+        "properties": {
+          "label": {
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Scopes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "title": "TokenIn",
+        "type": "object"
+      },
+      "TokenOut": {
+        "properties": {
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Scopes",
+            "type": "array"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "token",
+          "scopes",
+          "expires_at"
+        ],
+        "title": "TokenOut",
+        "type": "object"
+      },
+      "TranslateIn": {
+        "properties": {
+          "target": {
+            "enum": [
+              "en",
+              "hi",
+              "bn",
+              "ta",
+              "te",
+              "mr",
+              "gu",
+              "kn",
+              "ml",
+              "pa"
+            ],
+            "title": "Target",
+            "type": "string"
+          },
+          "text": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "target"
+        ],
+        "title": "TranslateIn",
         "type": "object"
       },
       "UploadIntent": {
@@ -4276,6 +5008,259 @@
         "summary": "Change Role",
         "tags": [
           "admin"
+        ]
+      }
+    },
+    "/api/v1/ai/assistant": {
+      "post": {
+        "operationId": "assistant_api_v1_ai_assistant_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AskIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Assistant",
+        "tags": [
+          "search",
+          "ai"
+        ]
+      }
+    },
+    "/api/v1/ai/caption": {
+      "post": {
+        "operationId": "caption_api_v1_ai_caption_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CaptionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaptionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Caption",
+        "tags": [
+          "search",
+          "ai"
+        ]
+      }
+    },
+    "/api/v1/ai/comment-check": {
+      "post": {
+        "description": "Toxic-comment warning before posting. A nudge only: humans decide on removals (Blueprint 16.3).",
+        "operationId": "comment_check_api_v1_ai_comment_check_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentCheckIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentCheckOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Comment Check",
+        "tags": [
+          "search",
+          "ai"
+        ]
+      }
+    },
+    "/api/v1/ai/listing": {
+      "post": {
+        "operationId": "listing_api_v1_ai_listing_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListingIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TextOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Listing",
+        "tags": [
+          "search",
+          "ai"
+        ]
+      }
+    },
+    "/api/v1/ai/subtitles": {
+      "post": {
+        "operationId": "subtitles_api_v1_ai_subtitles_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubtitlesIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TextOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Subtitles",
+        "tags": [
+          "search",
+          "ai"
+        ]
+      }
+    },
+    "/api/v1/ai/translate": {
+      "post": {
+        "operationId": "translate_api_v1_ai_translate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TranslateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TextOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Translate",
+        "tags": [
+          "search",
+          "ai"
         ]
       }
     },
@@ -5650,6 +6635,49 @@
         ]
       }
     },
+    "/api/v1/businesses/{business_id}/payouts": {
+      "get": {
+        "operationId": "payouts_api_v1_businesses__business_id__payouts_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "business_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Business Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Payouts",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
     "/api/v1/businesses/{business_id}/products": {
       "get": {
         "operationId": "catalog_api_v1_businesses__business_id__products_get",
@@ -6207,6 +7235,60 @@
         "summary": "Invite Vendor",
         "tags": [
           "events"
+        ]
+      }
+    },
+    "/api/v1/calls/{conversation_id}/token": {
+      "post": {
+        "description": "Short-lived LiveKit token. `ring=false` when answering (does not ring the others again).",
+        "operationId": "call_token_api_v1_calls__conversation_id__token_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "conversation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Conversation Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ring",
+            "required": false,
+            "schema": {
+              "default": true,
+              "title": "Ring",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallToken"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Call Token",
+        "tags": [
+          "calls"
         ]
       }
     },
@@ -7215,6 +8297,32 @@
         ]
       }
     },
+    "/api/v1/help": {
+      "get": {
+        "operationId": "help_articles_api_v1_help_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/HelpArticle"
+                  },
+                  "title": "Response Help Articles Api V1 Help Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Help Articles",
+        "tags": [
+          "search",
+          "ai"
+        ]
+      }
+    },
     "/api/v1/highlights": {
       "post": {
         "operationId": "create_highlight_api_v1_highlights_post",
@@ -7253,6 +8361,93 @@
         "summary": "Create Highlight",
         "tags": [
           "stories"
+        ]
+      }
+    },
+    "/api/v1/mcp-tokens": {
+      "post": {
+        "operationId": "create_token_api_v1_mcp_tokens_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Token",
+        "tags": [
+          "mcp"
+        ]
+      }
+    },
+    "/api/v1/mcp-tokens/drafts": {
+      "get": {
+        "operationId": "drafts_api_v1_mcp_tokens_drafts_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DraftOut"
+                  },
+                  "title": "Response Drafts Api V1 Mcp Tokens Drafts Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Drafts",
+        "tags": [
+          "mcp"
+        ]
+      }
+    },
+    "/api/v1/me/entitlements": {
+      "get": {
+        "operationId": "entitlements_api_v1_me_entitlements_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Entitlements"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Entitlements",
+        "tags": [
+          "payments"
         ]
       }
     },
@@ -7687,6 +8882,324 @@
         "summary": "Set Status",
         "tags": [
           "shop"
+        ]
+      }
+    },
+    "/api/v1/payments/intents": {
+      "post": {
+        "operationId": "create_intent_api_v1_payments_intents_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 80,
+              "minLength": 8,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntentIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Intent",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/payments/mine": {
+      "get": {
+        "operationId": "my_payments_api_v1_payments_mine_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentOut"
+                  },
+                  "title": "Response My Payments Api V1 Payments Mine Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "My Payments",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/payments/webhooks/razorpay": {
+      "post": {
+        "description": "Signature-authenticated (CSRF-exempt). Acknowledges fast; heavy follow-up runs from outbox events.",
+        "operationId": "razorpay_webhook_api_v1_payments_webhooks_razorpay_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Razorpay-Signature",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Razorpay-Signature"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Razorpay-Event-Id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Razorpay-Event-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Razorpay Webhook Api V1 Payments Webhooks Razorpay Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Razorpay Webhook",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/payments/{payment_id}": {
+      "get": {
+        "operationId": "get_payment_api_v1_payments__payment_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "payment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Payment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Payment",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/payments/{payment_id}/refund": {
+      "post": {
+        "operationId": "refund_api_v1_payments__payment_id__refund_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "payment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Payment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Refund",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/payments/{payment_id}/sandbox-complete": {
+      "post": {
+        "description": "Local/test only (404 when real Razorpay keys are configured).",
+        "operationId": "sandbox_complete_api_v1_payments__payment_id__sandbox_complete_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "payment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Payment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Sandbox Complete Api V1 Payments  Payment Id  Sandbox Complete Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Sandbox Complete",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/plans": {
+      "get": {
+        "operationId": "plans_api_v1_plans_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PlanOut"
+                  },
+                  "title": "Response Plans Api V1 Plans Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Plans",
+        "tags": [
+          "payments"
         ]
       }
     },
@@ -8833,6 +10346,72 @@
         ]
       }
     },
+    "/api/v1/search": {
+      "get": {
+        "operationId": "search_api_v1_search_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^(post|business|help)$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Kind"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SearchHit"
+                  },
+                  "title": "Response Search Api V1 Search Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Search",
+        "tags": [
+          "search",
+          "ai"
+        ]
+      }
+    },
     "/api/v1/search/users": {
       "get": {
         "operationId": "search_users_api_v1_search_users_get",
@@ -9089,6 +10668,25 @@
         "summary": "Ready",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/mcp": {
+      "post": {
+        "operationId": "mcp_mcp_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Mcp",
+        "tags": [
+          "mcp"
         ]
       }
     }

@@ -1,8 +1,8 @@
 # RedStarVibe Project Status
 
 Updated: 2026-11-16
-Current phase: Phase 6 — money (code complete locally, sandbox provider)
-Release: none deployed. Local stack verified at http://localhost:8090 (see `docs/setup.md`).
+Current phase: Phases 0–7 code complete locally; pilot validation and hosting not started
+Release: none deployed. Full local stack verified end to end at http://localhost:8090 (`infra/scripts/smoke_e2e.sh`, 26 steps).
 
 ## Phase status
 - [x] Phase 0 — Repository audit and engineering setup (`docs/audit/phase-0-audit.md`)
@@ -12,7 +12,7 @@ Release: none deployed. Local stack verified at http://localhost:8090 (see `docs
 - [ ] Phase 4 — Social complete — code done; exit criterion (Day-7 retention improving) needs real users
 - [ ] Phase 5 — Events and shop — code done; exit criterion (5 event companies + 10 shops live) needs pilot
 - [ ] Phase 6 — Money — code done with sandbox; real Razorpay needs keys + webhook URL; exit needs first real paid plan
-- [ ] Phase 7 — Calls and AI plus
+- [ ] Phase 7 — Calls and AI plus — code done with `AI_PROVIDER=none` + local LiveKit; real providers need keys; exit needs real AI cost data
 - [ ] Phase 8 — Scale (metrics-triggered)
 
 ## Phase 1 checklist
@@ -118,6 +118,17 @@ Release: none deployed. Local stack verified at http://localhost:8090 (see `docs
 | Web: checkout page (sandbox + Razorpay Checkout), plans page, pay buttons on My orders | done | build passes |
 | Razorpay live keys, webhook URL registration, Route payouts, GST invoices, boosts/promotion, creator tips | **open** | needs accounts + legal/accounting review |
 
+## Phase 7 checklist
+| Item | Status | Evidence |
+|---|---|---|
+| AI provider adapter (none / Workers AI / Claude), versioned prompt files, gateway: plan quota, budget switch, circuit breaker, call log | done | `tests/test_phase7_ai_calls.py` |
+| Caption + hashtag suggestions (user edits), listing assistant, toxic-comment nudge, translation, subtitles | done (rules locally; AI paths need keys) | quota/fallback test |
+| Hybrid search (tsvector + pgvector HNSW + RRF), privacy/blocks/owner filter in SQL, DMs never indexed, embedding cache by hash, re-embed backfill | done | `test_hybrid_search_respects_privacy_blocks_and_never_indexes_dms` |
+| RAG assistant: help docs + own content + own business data, citations, "I don't know", untrusted-source wrapping, tenant boundary | done | assistant tests + smoke step 22 |
+| MCP at /mcp: tokens with scopes, tools (search_posts, get_profile, list_notifications, get_bookings, get_orders, draft_post), draft-only writes, rate limit, audit | done (PAT; OAuth 2.1 open, ADR 0019) | `test_mcp_scopes_drafts_and_auth` + smoke 23–24 |
+| LiveKit calls: 5-min tokens after membership/block checks, ringing over WebSocket, 1:1 + small group call page | done | `test_call_tokens_membership_blocks_and_claims` + smoke 25 |
+| Real provider keys (Workers AI, Claude, LiveKit Cloud), RAG golden set in CI, spam model, call quality telemetry | **open** | needs accounts / data |
+
 ## Verified features
 | Feature | Status | Evidence / test | Owner |
 |---|---|---|---|
@@ -126,10 +137,10 @@ Release: none deployed. Local stack verified at http://localhost:8090 (see `docs
 | Posts/media | working (local) | Phase 3 + 4 tests, smoke | — |
 | Feed | working (local) | feed tests, smoke | — |
 | Notifications (in-app) | working (local) | tests + smoke | — |
-| Search | not implemented | | |
-| RAG assistant | not implemented | | |
+| Search | working (local) | Phase 7 tests, smoke | — |
+| RAG assistant | working (local, extractive without provider) | tests, smoke | — |
 | Image moderation | not implemented | | |
-| MCP | not implemented | | |
+| MCP | working (local, token auth) | tests, smoke | — |
 | Business page + booking | working (local) | 50 backend tests; `infra/scripts/smoke_e2e.sh` | — |
 | Admin panel UI | not implemented | | |
 

@@ -30,6 +30,7 @@ services:
     environment:
       NEXT_PUBLIC_MEDIA_ORIGIN: ${RSV_MEDIA_ORIGIN:-}
       RSV_INTERNAL_API_URL: http://api:8000
+      NEXT_PUBLIC_LIVEKIT_ORIGIN: ${RSV_LIVEKIT_URL:-}
       RSV_PUBLIC_BASE_URL: ${RSV_PUBLIC_BASE_URL:-http://localhost:8080}
     networks: [private]
     restart: unless-stopped
@@ -37,7 +38,7 @@ services:
 
   migrate:
     <<: *backend
-    command: ["sh", "-c", "alembic upgrade head && python -m scripts.ensure_buckets"]
+    command: ["sh", "-c", "alembic upgrade head && python -m scripts.ensure_buckets && python -m scripts.index_help"]
     restart: "no"
 
   api:
@@ -89,6 +90,25 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
+    restart: unless-stopped
+
+  livekit:
+    # Local WebRTC SFU for calls (dev keys only). Staging/production use LiveKit Cloud or a self-hosted cluster.
+    image: livekit/livekit-server:v1.9
+    command: ["--dev", "--bind", "0.0.0.0"]
+    environment:
+      # Signalling/RTC ports must match the published ports (ICE candidates advertise them). Override if taken.
+      LIVEKIT_CONFIG: |
+        port: ${RSV_LIVEKIT_PORT:-7880}
+        rtc:
+          tcp_port: ${RSV_LIVEKIT_TCP_PORT:-7881}
+          udp_port: ${RSV_LIVEKIT_UDP_PORT:-7882}
+          use_external_ip: false
+    ports:
+      - "127.0.0.1:${RSV_LIVEKIT_PORT:-7880}:${RSV_LIVEKIT_PORT:-7880}"
+      - "127.0.0.1:${RSV_LIVEKIT_TCP_PORT:-7881}:${RSV_LIVEKIT_TCP_PORT:-7881}"
+      - "127.0.0.1:${RSV_LIVEKIT_UDP_PORT:-7882}:${RSV_LIVEKIT_UDP_PORT:-7882}/udp"
+    networks: [private]
     restart: unless-stopped
 
   objectstore:

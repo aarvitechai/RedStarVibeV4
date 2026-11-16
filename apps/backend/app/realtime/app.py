@@ -8,6 +8,7 @@ import asyncio
 import contextlib
 import json
 import logging
+from collections.abc import AsyncIterator
 from urllib.parse import urlparse
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
@@ -23,13 +24,15 @@ from app.realtime.hub import channel
 log = logging.getLogger("rsv.ws")
 HEARTBEAT_S = 25
 
-app = FastAPI(title="RedStarVibe realtime", docs_url=None, openapi_url=None)
 
-
-@app.on_event("shutdown")
-async def _shutdown() -> None:
+@contextlib.asynccontextmanager
+async def _lifespan(_: FastAPI) -> AsyncIterator[None]:
+    yield
     await dispose_engine()
     await close_redis()
+
+
+app = FastAPI(title="RedStarVibe realtime", docs_url=None, openapi_url=None, lifespan=_lifespan)
 
 
 def _origin_ok(ws: WebSocket) -> bool:

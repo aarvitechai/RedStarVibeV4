@@ -21,6 +21,10 @@ os.environ["RSV_ENV"] = "test"
 os.environ["RSV_DATABASE_URL"] = TEST_DB
 os.environ["RSV_REDIS_URL"] = TEST_REDIS
 os.environ.setdefault("RSV_SECRET_KEY", "test-secret-key-test-secret-key-0123456789")
+os.environ.setdefault("RSV_LIVEKIT_URL", "ws://livekit.test")
+os.environ.setdefault("RSV_LIVEKIT_API_KEY", "devkey")
+os.environ.setdefault("RSV_LIVEKIT_API_SECRET", "test-livekit-secret-0123456789abcdef")
+os.environ["RSV_AI_PROVIDER"] = "none"
 
 from httpx import ASGITransport, AsyncClient  # noqa: E402
 
@@ -35,7 +39,8 @@ def _all_tables() -> str:
     """Every table any module declares (except seed data), so new modules are cleaned automatically."""
     from app.models import Base
 
-    names = (f"{t.schema}.{t.name}" for t in Base.metadata.sorted_tables)
+    names = [f"{t.schema}.{t.name}" for t in Base.metadata.sorted_tables]
+    names.append("search.documents")  # created with raw SQL (pgvector column), not an ORM model
     return ", ".join(n for n in names if n not in SEED_TABLES)
 
 

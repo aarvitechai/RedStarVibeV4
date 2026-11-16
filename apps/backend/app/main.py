@@ -14,6 +14,7 @@ from app.core.database import dispose_engine
 from app.core.errors import install_error_handlers
 from app.core.logging import configure_logging
 from app.core.request_context import request_id_middleware
+from app.mcp.server import mcp_router
 
 
 @asynccontextmanager
@@ -39,6 +40,7 @@ def create_app() -> FastAPI:
     install_error_handlers(app)
     app.include_router(health_router)
     app.include_router(api_router)
+    app.include_router(mcp_router)  # /mcp (Bearer token, no cookies -> outside CSRF)
     return app
 
 

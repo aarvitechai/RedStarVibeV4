@@ -1,7 +1,9 @@
 """Import every module's models here so Alembic and the metadata see them."""
 
+from app.ai.gateway import AICall
 from app.core.database import Base
 from app.core.events import DeadLetter, OutboxEvent, ProcessedEvent
+from app.mcp.server import Draft, McpToken
 from app.modules.accounts.models import LoginEvent, Session, User
 from app.modules.albums.models import Album, AlbumItem
 from app.modules.audit.models import AuditLog
@@ -22,6 +24,7 @@ from app.modules.social.models import Block, Follow, Mute, Profile
 from app.modules.stories.service import Highlight, HighlightItem, Story, StoryView
 
 __all__ = [
+    "AICall",
     "Album",
     "AlbumItem",
     "Asset",
@@ -37,6 +40,7 @@ __all__ = [
     "Comment",
     "Conversation",
     "DeadLetter",
+    "Draft",
     "EventBooking",
     "Follow",
     "Highlight",
@@ -45,6 +49,7 @@ __all__ = [
     "LedgerEntry",
     "Like",
     "LoginEvent",
+    "McpToken",
     "Member",
     "Message",
     "Mute",

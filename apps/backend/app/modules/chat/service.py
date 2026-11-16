@@ -318,3 +318,9 @@ async def member_conversation_ids(db: AsyncSession, user_id: uuid.UUID) -> list[
     return list(
         (await db.scalars(select(Member.conversation_id).where(Member.user_id == user_id, Member.left_at.is_(None)))).all()
     )
+
+
+async def call_members(db: AsyncSession, user: User, conv_id: uuid.UUID) -> list[uuid.UUID]:
+    """Active members of a conversation; raises 404 unless `user` is one of them."""
+    await _member(db, conv_id, user.id)
+    return await _active_member_ids(db, conv_id)

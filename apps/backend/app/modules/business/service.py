@@ -133,6 +133,7 @@ async def update(db: AsyncSession, user: User, business_id: uuid.UUID, data: Bus
         ip=ip,
         details={"fields": sorted(data.model_dump(exclude_unset=True))},
     )
+    emit(db, "business.updated", {"business_id": str(b.id)})
     await db.commit()
     await db.refresh(b)
     return await owner_view(db, b)

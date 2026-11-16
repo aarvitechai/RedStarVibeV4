@@ -86,6 +86,17 @@ function Composer({ onPosted, onStory }: { onPosted: (p: Post) => void; onStory:
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  async function suggest(form: HTMLFormElement | null) {
+    const box = form?.elements.namedItem("caption") as HTMLTextAreaElement | null;
+    if (!box) return;
+    try {
+      const s = await api<{ caption: string; hashtags: string[]; source: string }>("/api/v1/ai/caption", { method: "POST", body: JSON.stringify({ notes: box.value || null }) });
+      box.value = [s.caption, s.hashtags.join(" ")].filter(Boolean).join("\n"); // a suggestion: the user edits before posting
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Suggestions are unavailable right now.");
+    }
+  }
+
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
@@ -128,6 +139,7 @@ function Composer({ onPosted, onStory }: { onPosted: (p: Post) => void; onStory:
   return (
     <form className={styles.card} onSubmit={(e) => void submit(e)} aria-label="Create a post">
       <textarea name="caption" maxLength={2200} rows={3} placeholder="Share something with your city… #hashtags @mentions" className={styles.select} aria-label="Caption" />
+      <Button type="button" size="sm" variant="ghost" onClick={(e) => void suggest(e.currentTarget.form)}>✨ Suggest caption & hashtags</Button>
       <input type="file" name="files" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm" multiple aria-label="Photos or videos" />
       <div className={styles.formRow}>
         <label className={styles.nav}><span>Who can see</span>

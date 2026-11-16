@@ -10,7 +10,7 @@ Go-to-market: launch in one city with 2–3 trades, and onboard 20–30 real bus
 
 ## Repository state (read first)
 
-Phase 0 is complete. The repo holds the monorepo skeleton: a FastAPI app with health checks, the error shape and settings; a Next.js 16 app with the CSP nonce and design tokens; Docker Compose; CI; and ADRs 0001–0017. **No domain features exist yet.** Always check `docs/STATUS.md` (verified feature status) and `docs/audit/phase-0-audit.md` first.
+Phases 0–7 are code-complete locally: accounts and production base, business and booking, media/cards/referrals/albums, social and chat, events and shop, payments, and AI/search/MCP/calls. **Real-world exit criteria (pilots, hosting, provider keys) are not met yet.** Always check `docs/STATUS.md` (verified status and open items) and `docs/adr/` first. Local stack: `docker compose -p rsv4 up -d` → http://localhost:8090; end-to-end check: `infra/scripts/smoke_e2e.sh`.
 
 ADR 0017 applies: the Blueprint's "already built" features are not in this repo, so accounts and auth are built in Phase 1.
 

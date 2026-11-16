@@ -22,11 +22,13 @@ async def meta() -> MetaResponse:
 
 
 # Module routers (one line per module).
+from app.mcp.server import api_router as mcp_tokens_router  # noqa: E402
 from app.modules.accounts.router import router as accounts_router  # noqa: E402
 from app.modules.admin.router import router as admin_router  # noqa: E402
 from app.modules.albums.router import router as albums_router  # noqa: E402
 from app.modules.booking.router import router as booking_router  # noqa: E402
 from app.modules.business.router import router as business_router  # noqa: E402
+from app.modules.calls.router import router as calls_router  # noqa: E402
 from app.modules.cards.router import router as cards_router  # noqa: E402
 from app.modules.chat.router import router as chat_router  # noqa: E402
 from app.modules.events.router import router as events_router  # noqa: E402
@@ -37,6 +39,7 @@ from app.modules.payments.router import router as payments_router  # noqa: E402
 from app.modules.posts.router import router as posts_router  # noqa: E402
 from app.modules.referrals.router import router as referrals_router  # noqa: E402
 from app.modules.reviews.router import router as reviews_router  # noqa: E402
+from app.modules.search.router import router as search_router  # noqa: E402
 from app.modules.shop.router import router as shop_router  # noqa: E402
 from app.modules.social.router import router as social_router  # noqa: E402
 from app.modules.stories.router import router as stories_router  # noqa: E402
@@ -60,5 +63,8 @@ for _r in (
     events_router,
     shop_router,
     payments_router,
+    search_router,
+    calls_router,
+    mcp_tokens_router,
 ):
     api_router.include_router(_r)
