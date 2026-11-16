@@ -24,6 +24,10 @@ async def meta() -> MetaResponse:
 # Module routers (one line per module).
 from app.modules.accounts.router import router as accounts_router  # noqa: E402
 from app.modules.admin.router import router as admin_router  # noqa: E402
+from app.modules.booking.router import router as booking_router  # noqa: E402
+from app.modules.business.router import router as business_router  # noqa: E402
+from app.modules.notifications.router import router as notifications_router  # noqa: E402
+from app.modules.reviews.router import router as reviews_router  # noqa: E402
 
-api_router.include_router(accounts_router)
-api_router.include_router(admin_router)
+for _r in (accounts_router, admin_router, business_router, booking_router, reviews_router, notifications_router):
+    api_router.include_router(_r)

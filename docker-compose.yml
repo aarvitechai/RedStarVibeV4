@@ -29,6 +29,8 @@ services:
     image: ghcr.io/aarvitechai/redstarvibe-web:${RSV_IMAGE_TAG:-local}
     environment:
       NEXT_PUBLIC_MEDIA_ORIGIN: ${RSV_MEDIA_ORIGIN:-}
+      RSV_INTERNAL_API_URL: http://api:8000
+      RSV_PUBLIC_BASE_URL: ${RSV_PUBLIC_BASE_URL:-http://localhost:8080}
     networks: [private]
     restart: unless-stopped
     mem_limit: 512m

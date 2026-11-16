@@ -19,6 +19,8 @@ dependencies = [
     "pyjwt>=2.15,<3",
     "email-validator>=2.4",
     "httpx>=0.28",
+    "cryptography>=46",
+    "tzdata>=2025.2",
 ]
 
 [project.optional-dependencies]
@@ -68,5 +70,5 @@ follow_untyped_imports = false
 disallow_untyped_calls = false
 
 [[tool.mypy.overrides]]
-module = ["app.workers.*"]
+module = ["app.workers.*", "app.modules.*.tasks"]
 disallow_untyped_decorators = false

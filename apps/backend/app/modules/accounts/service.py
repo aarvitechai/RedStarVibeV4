@@ -182,3 +182,10 @@ async def change_role(db: AsyncSession, actor: User, target_id: uuid.UUID, role:
     await db.commit()
     await db.refresh(target)
     return target
+
+
+async def ensure_business_role(db: AsyncSession, user: User) -> None:
+    """Called by the business module when a user creates their first business. Never downgrades staff/admins."""
+    if user.role == "user":
+        await repo.set_role(db, user.id, "business")
+        user.role = "business"

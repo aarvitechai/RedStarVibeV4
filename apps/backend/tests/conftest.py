@@ -34,7 +34,16 @@ _TABLES = (
     "notify.processed_events",
     "notify.dead_letter",
 )
-EXTRA_TABLES: list[str] = []  # later modules append their tables
+EXTRA_TABLES = [
+    "business.businesses",
+    "business.services",
+    "business.hours",
+    "business.resources",
+    "booking.bookings",
+    "booking.status_history",
+    "reviews.reviews",
+    "notify.notifications",
+]
 
 
 async def _db_reachable() -> bool:

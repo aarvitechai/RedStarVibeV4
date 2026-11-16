@@ -1,13 +1,13 @@
 # RedStarVibe Project Status
 
 Updated: 2026-11-16
-Current phase: Phase 1 — production base (code complete locally; hosting-dependent items open)
+Current phase: Phase 2 — business daily tool (code complete locally; pilot validation not started)
 Release: none deployed. Local stack verified at http://localhost:8090 (see `docs/setup.md`).
 
 ## Phase status
 - [x] Phase 0 — Repository audit and engineering setup (`docs/audit/phase-0-audit.md`)
-- [ ] Phase 1 — Production base (+ accounts/auth, ADR 0017) — see checklist below
-- [ ] Phase 2 — Business daily tool
+- [ ] Phase 1 — Production base (+ accounts/auth, ADR 0017) — code done; hosting items open (checklist below)
+- [ ] Phase 2 — Business daily tool — code done; exit criterion (20 real businesses, 2 weeks) not started
 - [ ] Phase 3 — Viral growth
 - [ ] Phase 4 — Social complete
 - [ ] Phase 5 — Events and shop
@@ -40,6 +40,26 @@ Release: none deployed. Local stack verified at http://localhost:8090 (see `docs
 | Breached-password check (HIBP), Turnstile on signup | **open** | needs provider keys |
 | Email verification | **open** | needs email provider |
 
+## Phase 2 checklist
+| Item | Status | Evidence |
+|---|---|---|
+| Business page: create, edit, reserved/unique slug, encrypted phone, role promotion | done | `tests/test_business_booking.py` |
+| Public SSR page `/business/[slug]` with OG tags | done | `infra/scripts/smoke_e2e.sh` step 9 |
+| Services (paise prices, duration, buffer), hours, bookable resources | done | tests |
+| Owner-only management (404 for non-owners), permission checks | done | `test_other_users_cannot_manage_a_business` |
+| Slots API (hours, duration, buffer, lead time, per-resource availability) | done | slot unit test + API test |
+| Booking create with required Idempotency-Key; replay returns same booking | done | `test_idempotency_key_replay_returns_same_booking` |
+| No double booking: DB exclusion constraint + concurrent race test | done | `test_two_customers_race_for_one_slot_exactly_one_wins`, direct-insert test |
+| Status machine (confirm, complete, cancel, expire) with history | done | `test_status_machine_and_permissions` |
+| Reminders (beat, every minute, once only) and expiry (every 5 min) | done | `test_reminders_and_expiry_jobs` |
+| Reviews only after completed bookings; owner replies | done | `test_review_only_after_completion_and_owner_reply` |
+| In-app notifications from booking events, idempotent | done | test + smoke step 8 (real worker) |
+| Nearby search (PostGIS, radius, category) | done | `test_nearby_search` |
+| Web: dashboard, booking widget, my bookings + review, notifications, near-me | done | build passes; manual check pending |
+| Web push, email, SMS/WhatsApp channels | **open** | needs providers (Blueprint 25) |
+| Holidays / closures, quotation requests, business inbox, analytics | **open** | Phase 2 backlog |
+| Pilot: 20 real businesses taking bookings for 2 weeks | **not started** | needs hosting + onboarding |
+
 ## Verified features
 | Feature | Status | Evidence / test | Owner |
 |---|---|---|---|
@@ -47,12 +67,12 @@ Release: none deployed. Local stack verified at http://localhost:8090 (see `docs
 | Admin: audit log, role changes | working (API only) | tests | — |
 | Posts/media | not implemented | | |
 | Feed | not implemented | | |
-| Likes/notifications | not implemented (event plumbing only) | | |
+| Notifications (in-app) | working (local) | tests + smoke | — |
 | Search | not implemented | | |
 | RAG assistant | not implemented | | |
 | Image moderation | not implemented | | |
 | MCP | not implemented | | |
-| Business page | not implemented | | |
+| Business page + booking | working (local) | 50 backend tests; `infra/scripts/smoke_e2e.sh` | — |
 | Admin panel UI | not implemented | | |
 
 ## Current blockers

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NearbySearch } from "@/features/business/NearbySearch";
 import styles from "./page.module.css";
 
 export default function HomePage() {
@@ -11,7 +12,11 @@ export default function HomePage() {
         <nav className={styles.actions} aria-label="Account">
           <Link href="/signup" className={styles.primary}>Create your page</Link>
           <Link href="/login" className={styles.secondary}>Log in</Link>
+          <Link href="/dashboard" className={styles.secondary}>My business</Link>
         </nav>
+        <div style={{ marginTop: "var(--space-8)" }}>
+          <NearbySearch />
+        </div>
       </div>
     </main>
   );

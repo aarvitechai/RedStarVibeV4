@@ -5,42 +5,10 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
-# Blueprint 8.2 reserved usernames, plus routes the web app owns.
-RESERVED_USERNAMES = frozenset(
-    {
-        "admin",
-        "api",
-        "login",
-        "logout",
-        "signup",
-        "media",
-        "mcp",
-        "ws",
-        "business",
-        "p",
-        "settings",
-        "help",
-        "www",
-        "health",
-        "account",
-        "auth",
-        "explore",
-        "feed",
-        "search",
-        "notifications",
-        "messages",
-        "shop",
-        "events",
-        "i",
-        "redstarvibe",
-        "support",
-        "about",
-        "terms",
-        "privacy",
-        "static",
-        "_next",
-    }
-)
+from app.core.naming import RESERVED_NAMES
+
+# Reserved names are shared with business slugs (app/core/naming.py).
+RESERVED_USERNAMES = RESERVED_NAMES
 _USERNAME_RE = re.compile(r"^[a-z0-9](?:[a-z0-9_.]{1,28}[a-z0-9])$")
 _COMMON_PASSWORDS = frozenset(
     {

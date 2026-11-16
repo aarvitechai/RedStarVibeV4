@@ -21,3 +21,4 @@ One file per decision: `NNNN-short-title.md` with Status (Proposed, Accepted or 
 | 0015 | Minimum age 18+ | Accepted |
 | 0016 | Branch and environment flow | Proposed |
 | 0017 | Greenfield repository: build the identity core in Phase 1 | Accepted |
+| 0018 | Booking model and module dependencies | Accepted |
