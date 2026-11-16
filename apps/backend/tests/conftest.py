@@ -25,25 +25,18 @@ os.environ.setdefault("RSV_SECRET_KEY", "test-secret-key-test-secret-key-0123456
 from httpx import ASGITransport, AsyncClient  # noqa: E402
 
 BACKEND = Path(__file__).resolve().parent.parent
-_TABLES = (
-    "accounts.users",
-    "accounts.sessions",
-    "accounts.login_events",
-    "accounts.audit_log",
-    "notify.outbox",
-    "notify.processed_events",
-    "notify.dead_letter",
-)
-EXTRA_TABLES = [
-    "business.businesses",
-    "business.services",
-    "business.hours",
-    "business.resources",
-    "booking.bookings",
-    "booking.status_history",
-    "reviews.reviews",
-    "notify.notifications",
-]
+
+
+# Reference data seeded by migrations; kept between tests.
+SEED_TABLES = {"cards.templates", "shop.categories"}
+
+
+def _all_tables() -> str:
+    """Every table any module declares (except seed data), so new modules are cleaned automatically."""
+    from app.models import Base
+
+    names = (f"{t.schema}.{t.name}" for t in Base.metadata.sorted_tables)
+    return ", ".join(n for n in names if n not in SEED_TABLES)
 
 
 async def _db_reachable() -> bool:
@@ -94,7 +87,7 @@ async def db(migrated_db: str) -> AsyncIterator[Any]:
     sm = get_sessionmaker()
     async with sm() as s:
         await s.execute(text("SET LOCAL session_replication_role = replica"))  # this transaction only: bypass append-only trigger
-        await s.execute(text(f"TRUNCATE {', '.join((*_TABLES, *EXTRA_TABLES))} RESTART IDENTITY CASCADE"))
+        await s.execute(text(f"TRUNCATE {_all_tables()} RESTART IDENTITY CASCADE"))
         await s.commit()
     await get_redis().flushdb()
     from app.core.storage import MemoryStorage, set_storage_for_tests

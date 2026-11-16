@@ -71,3 +71,11 @@ def client_info(request: Request) -> ClientInfo:
 
 
 Client = Annotated[ClientInfo, Depends(client_info)]
+
+
+async def optional_user(request: Request, db: AsyncSession) -> User | None:
+    """The signed-in user for public pages that show more to members; None for visitors or bad tokens."""
+    try:
+        return (await _principal(request, db)).user
+    except Unauthorized:
+        return None

@@ -1,7 +1,7 @@
 # RedStarVibe Project Status
 
 Updated: 2026-11-16
-Current phase: Phase 3 — viral growth (code complete locally)
+Current phase: Phase 4 — social complete (code complete locally)
 Release: none deployed. Local stack verified at http://localhost:8090 (see `docs/setup.md`).
 
 ## Phase status
@@ -9,7 +9,7 @@ Release: none deployed. Local stack verified at http://localhost:8090 (see `docs
 - [ ] Phase 1 — Production base (+ accounts/auth, ADR 0017) — code done; hosting items open (checklist below)
 - [ ] Phase 2 — Business daily tool — code done; exit criterion (20 real businesses, 2 weeks) not started
 - [ ] Phase 3 — Viral growth — code done; exit criterion (10% of actives share weekly) needs real users
-- [ ] Phase 4 — Social complete
+- [ ] Phase 4 — Social complete — code done; exit criterion (Day-7 retention improving) needs real users
 - [ ] Phase 5 — Events and shop
 - [ ] Phase 6 — Money
 - [ ] Phase 7 — Calls and AI plus
@@ -75,13 +75,29 @@ Release: none deployed. Local stack verified at http://localhost:8090 (see `docs
 | Licensed music for slideshows, festival story frames, A/B test of share flow | **open** | needs licensed assets |
 | Points 7-day pending period, device/IP fraud limits, leaderboard | **open** | backlog (Blueprint 26.4) |
 
+## Phase 4 checklist
+| Item | Status | Evidence |
+|---|---|---|
+| Profiles, private accounts, follow requests (approve/decline), user search | done | `tests/test_phase4_social.py` |
+| Block (both directions, removes follows, hides profile/posts/comments/search/DM) and mute | done | `test_block_hides_everything_both_ways` |
+| Posts with photos/videos, visibility, hashtags + hashtag pages, mentions, likes (idempotent), threaded comments, saves | done | `test_post_with_photo_like_comment_save` |
+| Feed: fan-out on write to Redis (800 cap, 7 d TTL), celebrity merge on read, DB fallback, read-time re-check of follows/blocks | done | feed tests + smoke step 16 |
+| Stories (24 h), viewers list (author only), highlights | done | `test_stories_tray_views_and_expiry` |
+| DMs + groups: persisted first, gap-free per-conversation seq under concurrency, client-id dedupe, after_seq catch-up, unread/read receipts, typing, owner controls | done | chat tests |
+| WebSocket `ws` process: cookie auth, Origin check, 25 s heartbeat, Redis pub/sub across replicas, clean task shutdown | done | smoke step 17 (real socket) |
+| Voice notes (audio upload → AAC) and reels (single video, reels feed) | done | code + media pipeline; UI wired |
+| Reports + staff moderation queue; removal applied by owning module via event; audited | done | `test_report_and_moderator_removal` |
+| Like/view counters buffered in Redis (flush every 5 s) | **open** | direct atomic UPDATE today (fine at launch scale) |
+| Messages monthly partitioning, web push for offline users, HLS for reels | **open** | needs scale / VAPID keys |
+| Close friends, restrict, story frames | **open** | backlog |
+
 ## Verified features
 | Feature | Status | Evidence / test | Owner |
 |---|---|---|---|
 | Authentication | working (local) | 33 backend tests; gateway smoke test | — |
 | Admin: audit log, role changes | working (API only) | tests | — |
-| Posts/media | not implemented | | |
-| Feed | not implemented | | |
+| Posts/media | working (local) | Phase 3 + 4 tests, smoke | — |
+| Feed | working (local) | feed tests, smoke | — |
 | Notifications (in-app) | working (local) | tests + smoke | — |
 | Search | not implemented | | |
 | RAG assistant | not implemented | | |

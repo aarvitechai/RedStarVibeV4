@@ -17,5 +17,12 @@ def test_tasks_register_under_their_names() -> None:
     for module in TASK_MODULES:
         importlib.import_module(module)
     names = set(celery_app.tasks)
-    assert {"outbox.relay", "events.dispatch", "media.process", "cards.render", "albums.render_slideshow",
-            "booking.send_reminders", "booking.expire_stale"} <= names
+    assert {
+        "outbox.relay",
+        "events.dispatch",
+        "media.process",
+        "cards.render",
+        "albums.render_slideshow",
+        "booking.send_reminders",
+        "booking.expire_stale",
+    } <= names

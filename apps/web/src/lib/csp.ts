@@ -8,7 +8,9 @@ export function buildCsp(nonce: string, isDev: boolean): string {
     "style-src": ["'self'", "'unsafe-inline'"],
     "img-src": ["'self'", "data:", "blob:", ...(MEDIA_ORIGIN ? [MEDIA_ORIGIN] : [])],
     "media-src": ["'self'", "blob:", ...(MEDIA_ORIGIN ? [MEDIA_ORIGIN] : [])],
+    "worker-src": ["'self'", "blob:"],
     "font-src": ["'self'"],
+    // CSP3 'self' covers same-origin ws:/wss: (our /ws); dev adds ws: for hot reload.
     "connect-src": ["'self'", ...(isDev ? ["ws:"] : [])],
     "frame-ancestors": ["'none'"],
     "base-uri": ["'self'"],

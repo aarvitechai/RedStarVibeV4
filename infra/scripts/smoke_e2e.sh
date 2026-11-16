@@ -80,4 +80,29 @@ post "$CUST" "$CT" -X POST "$BASE/api/v1/albums/$ALB/slideshow" >/dev/null
 i=0; while [ "$i" -lt 60 ]; do SST="$(curl -fsS -b "$CUST" "$BASE/api/v1/albums/mine" | json "d[0]['slideshow_status']")"; [ "$SST" = ready ] && break; [ "$SST" = failed ] && break; i=$((i + 1)); sleep 1; done
 MP4="$(curl -fsS -b "$CUST" "$BASE/api/v1/albums/mine" | json "d[0]['slideshow_url']")"
 echo "15. album flipbook page $(curl -s -o /dev/null -w '%{http_code}' "$BASE/a/$TOK"); slideshow $SST $(curl -fsS -o "$TMP/dl" -w '%{content_type} %{size_download}B' "$MP4")"
+
+# ---- Phase 4: social, feed fan-out, realtime chat ----
+post "$CUST" "$CT" -X POST "$BASE/api/v1/profiles/owner$RUN/follow" >/dev/null
+P1="$(post "$OWNER" "$OT" -d "{\"caption\":\"New ceiling fans in stock #jaipur\",\"media_ids\":[]}" "$BASE/api/v1/posts" | json "d['id']")"
+i=0; while [ "$i" -lt 20 ]; do F="$(curl -fsS -b "$CUST" "$BASE/api/v1/feed" | json "len(d['items'])")"; [ "$F" -ge 1 ] && break; i=$((i + 1)); sleep 1; done
+echo "16. post fanned out to follower feed by worker: $F item(s); like -> $(post "$CUST" "$CT" -X POST "$BASE/api/v1/posts/$P1/like" | json "d['like_count']")"
+CONV="$(post "$CUST" "$CT" -X POST "$BASE/api/v1/chat/direct/owner$RUN" | json "d['id']")"
+OWNER_AT="$(awk '$6 == "rsv_at" {print $7}' "$OWNER")"
+$COMPOSE exec -T -e AT="$OWNER_AT" api python -c "
+import asyncio, json, os, websockets
+async def main():
+    async with websockets.connect('ws://gateway:8080/ws', additional_headers={'Cookie': 'rsv_at=' + os.environ['AT'], 'Origin': 'http://localhost:8080'}) as ws:
+        print(json.loads(await ws.recv())['type'], flush=True)
+        while True:
+            f = json.loads(await asyncio.wait_for(ws.recv(), 15))
+            if f['type'] == 'message.new':
+                print('message.new', f['message']['body'], 'seq', f['message']['seq'], flush=True); return
+asyncio.run(main())" > "$TMP/ws.out" 2>&1 &
+WSPID=$!
+sleep 3
+post "$CUST" "$CT" -d '{"body":"Is the fan installation available tomorrow?","client_id":"smoke-1"}' "$BASE/api/v1/chat/conversations/$CONV/messages" >/dev/null
+wait "$WSPID" || true
+echo "17. realtime chat over WebSocket: $(tr '
+' ' ' < "$TMP/ws.out")"
+echo "18. pages: feed $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/feed") profile $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/owner$RUN") post $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/p/$P1") messages $(curl -s -o "$TMP/dl" -w '%{http_code}' "$BASE/messages")"
 echo "SMOKE PASSED — open $BASE/business/sharma-$RUN"

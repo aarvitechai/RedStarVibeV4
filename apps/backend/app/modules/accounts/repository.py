@@ -92,3 +92,25 @@ async def list_active_families(db: AsyncSession, user_id: uuid.UUID) -> list[Ses
 
 async def add_login_event(db: AsyncSession, event: LoginEvent) -> None:
     db.add(event)
+
+
+async def search_users(db: AsyncSession, q: str, limit: int) -> list[User]:
+    """Prefix/trigram search on username and display name (pg_trgm)."""
+    pattern = f"%{q.strip().lower().replace('%', '').replace('_', '')}%"
+    rows = await db.scalars(
+        select(User)
+        .where(
+            User.status == "active",
+            User.deleted_at.is_(None),
+            (func.lower(User.username).like(pattern)) | (func.lower(User.display_name).like(pattern)),
+        )
+        .order_by(func.length(User.username))
+        .limit(limit)
+    )
+    return list(rows)
+
+
+async def get_users(db: AsyncSession, ids: list[uuid.UUID]) -> dict[uuid.UUID, User]:
+    if not ids:
+        return {}
+    return {u.id: u for u in (await db.scalars(select(User).where(User.id.in_(ids)))).all()}

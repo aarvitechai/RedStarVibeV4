@@ -19,7 +19,7 @@ services:
     ports:
       - "127.0.0.1:${RSV_HTTP_PORT:-8080}:8080"
     networks: [public, private]
-    depends_on: [api, web]
+    depends_on: [api, web, ws]
     restart: unless-stopped
 
   web:
@@ -50,6 +50,14 @@ services:
       timeout: 3s
       retries: 5
     mem_limit: 768m
+
+  ws:
+    # WebSocket process (same image). Scale by open connections; Redis pub/sub links replicas.
+    <<: *backend
+    command: ["uvicorn", "app.realtime.app:app", "--host", "0.0.0.0", "--port", "8001", "--ws-ping-interval", "0", "--timeout-graceful-shutdown", "20"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    mem_limit: 512m
 
   worker:
     <<: *backend
