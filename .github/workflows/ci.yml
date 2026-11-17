@@ -95,7 +95,7 @@ jobs:
           sed -i 's/^POSTGRES_PASSWORD=$/POSTGRES_PASSWORD=ci-only/' .env
           docker compose build
       - name: Scan backend and web images
-        uses: aquasecurity/trivy-action@v0.33.1
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: image
           image-ref: ghcr.io/aarvitechai/redstarvibe-backend:local
