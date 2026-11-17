@@ -94,16 +94,9 @@ jobs:
           cp .env.example .env
           sed -i 's/^POSTGRES_PASSWORD=$/POSTGRES_PASSWORD=ci-only/' .env
           docker compose build
-      - name: Scan backend and web images
-        uses: aquasecurity/trivy-action@v0.33.1
-        with:
-          scan-type: image
-          image-ref: ghcr.io/aarvitechai/redstarvibe-backend:local
-          severity: CRITICAL,HIGH
-          ignore-unfixed: true
-          format: json
-          output: trivy-backend.json
-          exit-code: "0"
+      - name: Scan backend image (Trivy)
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:/out" aquasec/trivy:0.67.2 image             --db-repository public.ecr.aws/aquasecurity/trivy-db:2 --java-db-repository public.ecr.aws/aquasecurity/trivy-java-db:1             --severity CRITICAL,HIGH --ignore-unfixed --format json --output /out/trivy-backend.json             ghcr.io/aarvitechai/redstarvibe-backend:local
       - name: Report findings as annotations (fails on any fixable HIGH/CRITICAL)
         run: |
           python3 - <<'PY'
