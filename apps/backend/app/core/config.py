@@ -29,6 +29,10 @@ class Settings(BaseSettings):
     db_statement_timeout_ms: int = 5000
     # ADR 0002: behind PgBouncer (transaction mode) the asyncpg statement cache must be off.
     db_pgbouncer: bool = False
+    # PgBouncer >= 1.21 with max_prepared_statements > 0 handles prepared statements in transaction mode, so the
+    # asyncpg statement cache can stay on (ADR 0021; turning it off cost ~11 ms per request in Phase 8 tests).
+    # Set false only for an older PgBouncer.
+    db_pgbouncer_prepared_statements: bool = True
 
     redis_url: str = "redis://redis:6379/0"
 

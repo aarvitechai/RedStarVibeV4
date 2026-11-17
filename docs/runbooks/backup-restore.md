@@ -21,6 +21,7 @@ To test the drill mechanics locally: `infra/scripts/restore_drill.sh --local`.
 | Date | Backup | Result | Time (RTO) | Notes |
 |---|---|---|---|---|
 | 2026-11-16 | local stack (`--local`) | PASSED | 16 s | migration 0002, 1 user, integrity OK. Not a production RTO: real data volumes will take longer. |
+| 2026-11-17 | local stack (`--local`) after Phase 8 changes (pg_stat_statements preloaded, worker pool, gateway upstreams) | PASSED | 27 s | migration 0009, 886 users, 943 audit entries, 0 pending outbox, integrity OK. Local only. |
 
 ## Real restore (incident)
 1. Declare an incident (`incident-response.md`). Stop writes: scale `api`, `worker`, `beat` to 0.

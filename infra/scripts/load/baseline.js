@@ -12,6 +12,7 @@ const r = (base) => Math.max(1, Math.round(base * RATE)); // k6 needs whole requ
 const DURATION = __ENV.DURATION || "2m";
 const run = `${Date.now().toString(36)}${Math.floor(Math.random() * 1e4)}`;
 const clashes = new Counter("booking_slot_taken");
+const created = new Counter("booking_created"); // compare with DB rows to prove no lost or duplicate bookings
 
 export const options = {
   setupTimeout: "5m",
@@ -61,6 +62,7 @@ export function setup() {
   }
   const days = [];
   for (let d = 1; d <= 14; d++) days.push(new Date(Date.now() + d * 86400000).toISOString().slice(0, 10));
+  console.log(`business_id=${biz.id}`);
   return { slug: biz.slug, bizId: biz.id, serviceId: service.id, customers, days };
 }
 
@@ -95,5 +97,6 @@ export function book(d) {
     { headers: { ...authed(c).headers, "Idempotency-Key": `${run}-${__VU}-${__ITER}` }, tags: { kind: "booking", name: "booking_create" },
       responseCallback: http.expectedStatuses(201, 409, 429) });
   if (r.status === 409) clashes.add(1);
+  if (r.status === 201) created.add(1);
   check(r, { "booking 201/409/429 (no 5xx)": (x) => [201, 409, 429].includes(x.status) });
 }

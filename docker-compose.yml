@@ -45,7 +45,7 @@ services:
     <<: *backend
     environment:
       PROMETHEUS_MULTIPROC_DIR: /tmp/prom
-    command: ["sh", "-c", "rm -rf /tmp/prom && mkdir -p /tmp/prom && exec gunicorn app.main:app -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 -w ${RSV_API_WORKERS:-2} --graceful-timeout 30"]
+    command: ["sh", "-c", "rm -rf /tmp/prom && mkdir -p /tmp/prom && exec gunicorn app.main:app -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 -w ${RSV_API_WORKERS:-2} --graceful-timeout 30 --no-control-socket"]
     depends_on:
       migrate: { condition: service_completed_successfully }
     healthcheck:
@@ -81,6 +81,9 @@ services:
   db:
     build: ./infra/docker/postgres
     image: redstarvibe-postgres:16
+    # pg_stat_statements: per-query time and call counts for the capacity review (Phase 8, docs/runbooks/scaling.md).
+    command: ["postgres", "-c", "shared_preload_libraries=pg_stat_statements", "-c", "pg_stat_statements.track=top",
+              "-c", "track_io_timing=on"]
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-rsv}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run python scripts/bootstrap_env.py first}
@@ -172,6 +175,7 @@ services:
       POOL_MODE: transaction
       MAX_CLIENT_CONN: "1000"
       DEFAULT_POOL_SIZE: "40"
+      MAX_PREPARED_STATEMENTS: "500"  # protocol-level prepared statements in transaction mode (ADR 0021)
       AUTH_TYPE: scram-sha-256
       LISTEN_PORT: "6432"
     networks: [private]

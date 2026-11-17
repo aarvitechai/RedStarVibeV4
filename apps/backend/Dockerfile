@@ -15,4 +15,4 @@ COPY --from=deps /install /usr/local
 COPY . .
 USER rsv
 EXPOSE 8000
-CMD ["gunicorn", "app.main:app", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:8000", "-w", "2", "--graceful-timeout", "30"]
+CMD ["gunicorn", "app.main:app", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:8000", "-w", "2", "--graceful-timeout", "30", "--no-control-socket"]

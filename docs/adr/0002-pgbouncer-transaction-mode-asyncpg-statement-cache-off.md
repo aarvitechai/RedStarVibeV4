@@ -1,6 +1,6 @@
 # ADR 0002: PgBouncer transaction mode; asyncpg statement cache off
 
-- Status: Accepted
+- Status: Accepted; statement-cache part superseded by ADR 0021 (2026-11-17)
 - Date: 2026-11-16
 - Source: Blueprint v4.0 section 0.2 and the Phase 0 audit
 

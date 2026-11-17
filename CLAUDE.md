@@ -40,7 +40,7 @@ When docs conflict, use the Blueprint v4. When code and docs differ, inspect the
 - **UI:** hand-written primitives with CSS-variable design tokens (`apps/web/src/styles/tokens.css`). **No shadcn/ui or Tailwind component kit** without an ADR. Images use `<picture>` with pre-sized AVIF/WebP (320/640/1080), not `next/image`.
 - **Frontend hosting:** a Next.js server container behind nginx, because the per-request CSP nonce in `src/proxy.ts` needs a server. Not Cloudflare Pages.
 - **Backend:** Python 3.12, FastAPI async, Pydantic v2, SQLAlchemy 2.0 async + asyncpg, Alembic. Uses uv, Ruff (line length 130) and mypy strict.
-- **Data:** PostgreSQL 16 with pgvector, pg_trgm, PostGIS and btree_gist. PgBouncer runs in transaction mode with the asyncpg statement cache off.
+- **Data:** PostgreSQL 16 with pgvector, pg_trgm, PostGIS and btree_gist. PgBouncer runs in transaction mode with prepared statements kept and timeouts set per transaction (ADR 0021; amends ADR 0002).
 - **Jobs:** Celery + Redis (queues: `default`, `media`, `ai`) and exactly one Celery beat. Kafka only at Stage 4 scale.
 - **Media:** Cloudflare R2 + CDN (`media.redstarvibe.com`), FFmpeg, Pillow/pyvips. SeaweedFS emulates R2 locally (not MinIO).
 - **AI:** Cloudflare Workers AI by default (bge-m3 1024-dim embeddings, vision, Whisper), with Claude optional. The provider is chosen with `AI_PROVIDER=none|cloudflare|anthropic`. RAG is an in-house pipeline in `app/ai/rag` (plain SQL), **not LlamaIndex**. Vectors stay in pgvector (no Qdrant) until ~10M vectors or search p95 > 150 ms. No self-hosted GPU.

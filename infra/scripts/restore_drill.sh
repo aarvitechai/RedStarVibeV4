@@ -29,8 +29,8 @@ until docker exec "$NAME" pg_isready -U rsv -d rsv >/dev/null 2>&1; do
 done
 sleep 2
 
-docker cp "$TMP/backup.dump" "$NAME:/tmp/backup.dump"
-docker exec "$NAME" pg_restore -U rsv -d rsv --no-owner --exit-on-error /tmp/backup.dump
+# Stream the dump on stdin: no container-side path (Git Bash on Windows rewrites /tmp/... arguments).
+docker exec -i "$NAME" pg_restore -U rsv -d rsv --no-owner --exit-on-error < "$TMP/backup.dump"
 
 q() { docker exec "$NAME" psql -U rsv -d rsv -tAc "$1"; }
 echo "migration version: $(q 'select version_num from alembic_version')"

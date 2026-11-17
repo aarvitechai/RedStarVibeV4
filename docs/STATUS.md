@@ -136,7 +136,13 @@ Release: none deployed. Full local stack verified end to end at http://localhost
 | Prometheus alert rules (Blueprint 18.1) + provisioned Grafana SLO dashboard (`make monitoring`) | done (local) | 7 rules loaded, dashboard provisioned |
 | k6 baseline + in-process hot-path profiler | done | `infra/scripts/load/baseline.js`, `scripts/profile_hot_paths.py` |
 | Level 1: pure ASGI middleware, no duplicate access log, fewer booking queries | done | reads p95 1.86 s → 195 ms locally |
-| Level 2 readiness: PgBouncer + separate media/AI worker (`--profile scale`), `RSV_API_WORKERS` | ready, off by default | runbook `docs/runbooks/scaling.md` |
+| Readiness review script (pg_stat_statements preloaded) | done | `infra/scripts/capacity_review.sql` |
+| Worker reuses one loop + pool per process (fixes "Event loop is closed" dead letter; 562 → 31 connections per run); worker gets statement timeouts | done | `tests/test_worker_runtime.py` |
+| API replica failover: crash of one replica, 0 failed requests, bookings confirmed = DB rows | done (local) | capacity report; gateway `upstream … resolve` |
+| PgBouncer works (per-transaction timeouts, prepared statements kept; ADR 0021); off by default | done, off | smoke 26/26 through PgBouncer |
+| Restore drill after topology changes | passed 27 s (local) | `docs/runbooks/backup-restore.md` |
+| Separate media/AI worker (`--profile scale`), `RSV_API_WORKERS` | ready, off by default | runbook `docs/runbooks/scaling.md` |
+| Hybrid search scans all visible documents (HNSW unused) | **open, deferred** | trigger: search p95 > 150 ms or ~100k documents |
 | Booking p95 < 300 ms | **open** | local disk fsync bound (5.4 ms/op); re-run on staging SSD |
 | Caches, replicas, partitions, Kafka, K8s | **deferred** | triggers in ADR 0020 |
 
