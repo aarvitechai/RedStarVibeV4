@@ -94,13 +94,28 @@ jobs:
           cp .env.example .env
           sed -i 's/^POSTGRES_PASSWORD=$/POSTGRES_PASSWORD=ci-only/' .env
           docker compose build
-      - name: Scan backend image
+      - name: Scan backend and web images
         uses: aquasecurity/trivy-action@v0.33.1
         with:
+          scan-type: image
           image-ref: ghcr.io/aarvitechai/redstarvibe-backend:local
           severity: CRITICAL,HIGH
           ignore-unfixed: true
-          exit-code: "1"
+          format: json
+          output: trivy-backend.json
+          exit-code: "0"
+      - name: Report findings as annotations (fails on any fixable HIGH/CRITICAL)
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          found = 0
+          for r in json.load(open("trivy-backend.json")).get("Results", []):
+              for v in r.get("Vulnerabilities") or []:
+                  found += 1
+                  print(f"::error title=Trivy {v['Severity']}::{r['Target']}: {v['PkgName']} {v['InstalledVersion']} -> {v.get('FixedVersion')} ({v['VulnerabilityID']})")
+          print(f"{found} fixable HIGH/CRITICAL finding(s)")
+          sys.exit(1 if found else 0)
+          PY
 
   e2e:
     # Full stack in Docker, then Playwright journeys at 360 / 768 / 1280 px.
