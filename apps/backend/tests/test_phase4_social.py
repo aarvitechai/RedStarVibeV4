@@ -234,6 +234,9 @@ async def test_report_and_moderator_removal(client: AsyncClient, db) -> None:  #
     async with db() as s:
         await s.execute(text("UPDATE accounts.users SET role='staff' WHERE username='moderator1'"))
         await s.commit()
+    from tests.conftest import enable_mfa
+
+    await enable_mfa(mod)
     queue = (await mod.get("/api/v1/admin/reports")).json()
     assert [q["target_id"] for q in queue] == [p["id"]]
     assert (await mod.post(f"/api/v1/admin/reports/{queue[0]['id']}/resolve", json={"action": "remove"})).json()[

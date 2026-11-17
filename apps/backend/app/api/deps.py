@@ -11,7 +11,7 @@ from app.core.cookies import access_cookie_name
 from app.core.database import get_session
 from app.core.errors import Forbidden, Unauthorized
 from app.core.net import client_ip
-from app.core.permissions import has_permission
+from app.core.permissions import PRIVILEGED_ROLES, has_permission
 from app.core.security import AccessClaims, TokenExpired, TokenInvalid, decode_access_token
 from app.modules.accounts import repository as accounts_repo
 from app.modules.accounts.models import User
@@ -58,9 +58,14 @@ CurrentUser = Annotated[User, Depends(_current_user)]
 def require_permission(permission: str) -> Callable[..., Coroutine[Any, Any, User]]:
     """Route-level check. The role is read from the database, never from the client or the token."""
 
-    async def dep(user: CurrentUser) -> User:
+    async def dep(user: CurrentUser, db: DB) -> User:
         if not has_permission(user.role, permission):
             raise Forbidden("missing_permission", "You do not have permission to do this.")
+        if user.role in PRIVILEGED_ROLES:
+            from app.modules.accounts import mfa
+
+            if not await mfa.is_enabled(db, user.id):  # Blueprint 12.1: MFA mandatory for staff and admins
+                raise Forbidden("mfa_setup_required", "Turn on two-factor login in Account before using staff tools.")
         return user
 
     return dep

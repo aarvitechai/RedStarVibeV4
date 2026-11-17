@@ -8,8 +8,8 @@ COPY pyproject.toml ./
 RUN mkdir app && touch app/__init__.py && pip install --prefix=/install ".[dev]"
 
 FROM base AS runtime
-# Licensed (OFL) Latin + Devanagari fonts for cards and share images; ffmpeg for slideshow export.
-RUN apt-get update && apt-get install -y --no-install-recommends fonts-noto-core ffmpeg && rm -rf /var/lib/apt/lists/*
+# OS security updates, licensed (OFL) Latin + Devanagari fonts for cards/share images, ffmpeg for media.
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends fonts-noto-core ffmpeg && rm -rf /var/lib/apt/lists/*
 RUN groupadd --system rsv && useradd --system --gid rsv --home /app rsv
 COPY --from=deps /install /usr/local
 COPY . .

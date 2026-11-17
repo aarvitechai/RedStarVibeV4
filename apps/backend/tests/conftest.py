@@ -130,3 +130,13 @@ async def signup(
         **extra,
     }
     return await client.post("/api/v1/auth/signup", json=body)
+
+
+async def enable_mfa(client: AsyncClient) -> str:
+    """Turn on TOTP for the signed-in user (needed before staff/admin routes). Returns the secret."""
+    from app.core import totp
+
+    setup = (await client.post("/api/v1/auth/mfa/setup")).json()
+    r = await client.post("/api/v1/auth/mfa/confirm", json={"code": totp.code_at(setup["secret"])})
+    assert r.status_code == 200, r.text
+    return str(setup["secret"])

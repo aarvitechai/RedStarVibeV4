@@ -110,6 +110,15 @@ async def login(db: AsyncSession, data: LoginRequest, client: ClientInfo) -> Iss
         raise Unauthorized("invalid_credentials", "Email or password is incorrect.")
     if needs_rehash(user.password_hash):
         user.password_hash = hash_password(data.password)
+    from app.modules.accounts import mfa
+
+    if await mfa.is_enabled(db, user.id):
+        # Password was right; a second factor is still needed. No session exists until the code is verified.
+        await db.commit()
+        await rate_limit.reset("login_account", email)
+        raise Unauthorized(
+            "mfa_required", "Enter the code from your authenticator app.", details={"ticket": mfa.issue_ticket(user.id)}
+        )
     tokens = await _issue(db, user, client)
     await repo.add_login_event(
         db, LoginEvent(user_id=user.id, success=True, ip=client.ip, user_agent=(client.user_agent or "")[:300] or None)
@@ -190,3 +199,19 @@ async def ensure_business_role(db: AsyncSession, user: User) -> None:
     if user.role == "user":
         await repo.set_role(db, user.id, "business")
         user.role = "business"
+
+
+async def login_with_mfa(db: AsyncSession, ticket: str, code: str, client: ClientInfo) -> IssuedTokens:
+    from app.modules.accounts import mfa
+
+    user_id = await mfa.verify_ticket(db, ticket, code)
+    user = await repo.get_user(db, user_id)
+    if user is None or user.status != "active":
+        raise Unauthorized("account_inactive", "Please sign in again.")
+    tokens = await _issue(db, user, client)
+    await repo.add_login_event(
+        db,
+        LoginEvent(user_id=user.id, success=True, reason="mfa", ip=client.ip, user_agent=(client.user_agent or "")[:300] or None),
+    )
+    await db.commit()
+    return tokens

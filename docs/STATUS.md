@@ -32,11 +32,11 @@ Release: none deployed. Full local stack verified end to end at http://localhost
 | Health/readiness endpoints | done | Phase 0 |
 | Restore drill script | done (local) | drill PASSED 16 s — `docs/runbooks/backup-restore.md` |
 | Nightly encrypted backup script | written, not scheduled | needs backup bucket + age key |
-| CI: lint, types, unit + integration tests, contract check, audits, image scan | written | first GitHub run pending |
+| CI: lint, types, unit + integration tests, contract check, audits, image scan, Playwright e2e on the full stack | done | GitHub Actions green on `dev` |
 | Deploy workflow (staging auto, production approval) | written | needs VM + GitHub Environments secrets |
 | Staging environment, Cloudflare Tunnel/Access | **open** | needs hosting accounts |
 | Sentry, Prometheus/Grafana, alerts | **open** | needs hosting |
-| MFA (TOTP/passkeys) for staff/admin | **open** | backlog |
+| MFA: TOTP two-factor login, mandatory for staff/admin/superadmin (403 until enabled), replay-safe codes | done | `tests/test_mfa.py`, `e2e/tests/two-factor.spec.ts` (passkeys still open) |
 | Breached-password check (HIBP), Turnstile on signup | **open** | needs provider keys |
 | Email verification | **open** | needs email provider |
 
@@ -55,7 +55,7 @@ Release: none deployed. Full local stack verified end to end at http://localhost
 | Reviews only after completed bookings; owner replies | done | `test_review_only_after_completion_and_owner_reply` |
 | In-app notifications from booking events, idempotent | done | test + smoke step 8 (real worker) |
 | Nearby search (PostGIS, radius, category) | done | `test_nearby_search` |
-| Web: dashboard, booking widget, my bookings + review, notifications, near-me | done | build passes; manual check pending |
+| Web: dashboard, booking widget, my bookings + review, notifications, near-me | done | Playwright journeys at 360/768/1280 |
 | Web push, email, SMS/WhatsApp channels | **open** | needs providers (Blueprint 25) |
 | Holidays / closures, quotation requests, business inbox, analytics | **open** | Phase 2 backlog |
 | Pilot: 20 real businesses taking bookings for 2 weeks | **not started** | needs hosting + onboarding |

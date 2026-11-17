@@ -3,8 +3,8 @@ from fastapi import APIRouter, Request, Response
 from app.api.deps import DB, Client, CurrentPrincipal, CurrentUser
 from app.core.cookies import CSRF_COOKIE, clear_auth_cookies, refresh_cookie_name, set_auth_cookies, set_csrf_cookie
 from app.core.security import new_csrf_token
+from app.modules.accounts import mfa, service
 from app.modules.accounts import repository as repo
-from app.modules.accounts import service
 from app.modules.accounts.schemas import CsrfOut, LoginRequest, MeOut, OkOut, SessionOut, SignupRequest
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -73,3 +73,25 @@ async def sessions(principal: CurrentPrincipal, db: DB) -> list[SessionOut]:
 async def logout_others(principal: CurrentPrincipal, db: DB) -> OkOut:
     await service.logout_other_devices(db, principal.user.id, principal.claims.session_family)
     return OkOut()
+
+
+@router.post("/login/mfa", response_model=MeOut)
+async def login_mfa(body: mfa.MfaLoginIn, response: Response, db: DB, client: Client) -> MeOut:
+    tokens = await service.login_with_mfa(db, body.ticket, body.code, client)
+    set_auth_cookies(response, tokens.access_token, tokens.refresh_token)
+    return MeOut.model_validate(tokens.user)
+
+
+@router.get("/mfa", response_model=mfa.MfaStatus)
+async def mfa_status(user: CurrentUser, db: DB) -> mfa.MfaStatus:
+    return mfa.MfaStatus(enabled=await mfa.is_enabled(db, user.id), required=user.role in ("staff", "admin", "superadmin"))
+
+
+@router.post("/mfa/setup", response_model=mfa.MfaSetupOut)
+async def mfa_setup(user: CurrentUser, db: DB) -> mfa.MfaSetupOut:
+    return await mfa.setup(db, user)
+
+
+@router.post("/mfa/confirm", response_model=mfa.MfaStatus)
+async def mfa_confirm(body: mfa.CodeIn, user: CurrentUser, db: DB, client: Client) -> mfa.MfaStatus:
+    return await mfa.confirm(db, user, body.code, client.ip)

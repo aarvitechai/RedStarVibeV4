@@ -8,7 +8,7 @@ from sqlalchemy.exc import DBAPIError
 from app.core.events import DeadLetter, Event, OutboxEvent, consumer, dispatch_event, emit, relay_once
 from app.core.permissions import has_permission
 from app.modules.audit.models import AuditLog
-from tests.conftest import signup
+from tests.conftest import enable_mfa, signup
 
 pytestmark = pytest.mark.usefixtures("db")
 
@@ -33,6 +33,9 @@ async def test_user_cannot_read_audit_log_but_admin_can(client: AsyncClient, db)
     assert r.status_code == 403 and r.json()["error"]["code"] == "missing_permission"
     # The role comes from the database, so the same token gains access once promoted.
     await _make_role(db, "asha", "admin")
+    r = await client.get("/api/v1/admin/audit-log")
+    assert r.status_code == 403 and r.json()["error"]["code"] == "mfa_setup_required"  # admins must use 2FA
+    await enable_mfa(client)
     assert (await client.get("/api/v1/admin/audit-log")).status_code == 200
 
 
@@ -41,6 +44,7 @@ async def test_role_change_by_superadmin_is_audited(client: AsyncClient, db) -> 
     target_id = (await signup(target, username="mohan")).json()["id"]
     await signup(client, username="boss")
     await _make_role(db, "boss", "superadmin")
+    await enable_mfa(client)
 
     r = await client.patch(f"/api/v1/admin/users/{target_id}/role", json={"role": "staff"})
     assert r.status_code == 200 and r.json()["role"] == "staff"

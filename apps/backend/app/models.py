@@ -4,6 +4,7 @@ from app.ai.gateway import AICall
 from app.core.database import Base
 from app.core.events import DeadLetter, OutboxEvent, ProcessedEvent
 from app.mcp.server import Draft, McpToken
+from app.modules.accounts.mfa import MfaFactor
 from app.modules.accounts.models import LoginEvent, Session, User
 from app.modules.albums.models import Album, AlbumItem
 from app.modules.audit.models import AuditLog
@@ -52,6 +53,7 @@ __all__ = [
     "McpToken",
     "Member",
     "Message",
+    "MfaFactor",
     "Mute",
     "Notification",
     "Order",
