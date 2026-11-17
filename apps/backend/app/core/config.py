@@ -59,6 +59,8 @@ class Settings(BaseSettings):
     livekit_api_secret: str = ""
 
     health_check_timeout_s: float = Field(default=2.0, gt=0)
+    # Abuse limits (Blueprint 12.2). Only raise for local end-to-end runs; never in staging/production.
+    rate_limit_signup_per_hour: int = Field(default=10, ge=1)
 
     @property
     def is_deployed(self) -> bool:

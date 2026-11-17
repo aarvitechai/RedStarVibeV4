@@ -8,6 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import rate_limit
+from app.core.config import get_settings
 from app.core.errors import AppError, Conflict, Unauthorized
 from app.core.events import emit
 from app.core.ids import uuid7
@@ -59,7 +60,7 @@ async def _issue(db: AsyncSession, user: User, client: ClientInfo, family_id: uu
 
 
 async def signup(db: AsyncSession, data: SignupRequest, client: ClientInfo) -> IssuedTokens:
-    await rate_limit.enforce("signup", client.ip, limit=10, window_s=3600)
+    await rate_limit.enforce("signup", client.ip, limit=get_settings().rate_limit_signup_per_hour, window_s=3600)
     taken_username, taken_email = await repo.exists_username_or_email(db, data.username, str(data.email))
     if taken_username:
         raise Conflict("username_taken", "This username is already taken.")

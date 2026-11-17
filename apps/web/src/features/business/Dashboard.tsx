@@ -234,7 +234,7 @@ function ServicesPanel({ biz, onChange }: { biz: BusinessOwnerView; onChange: ()
         {errors.form ? <p className={styles.alert} role="alert">{errors.form}</p> : null}
         <Field label="Service name" name="name" required error={errors.name} />
         <div className={styles.formRow}>
-          <Field label="Price (₹)" name="price" type="number" min={0} step="1" required error={errors.price_paise} />
+          <Field label="Service price (₹)" name="price" type="number" min={0} step="1" required error={errors.price_paise} />
           <Field label="Duration (min)" name="duration" type="number" min={5} step="5" defaultValue={60} required error={errors.duration_min} />
           <Field label="Gap after (min)" name="buffer" type="number" min={0} step="5" defaultValue={0} hint="Travel or cleanup" error={errors.buffer_min} />
         </div>

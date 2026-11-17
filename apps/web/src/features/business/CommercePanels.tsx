@@ -65,7 +65,7 @@ export function ShopPanel({ biz }: { biz: BusinessOwnerView }) {
       </ul>
       <form className={styles.formRow} onSubmit={add}>
         <Field label="Product" name="name" required />
-        <Field label="Price (₹)" name="price" type="number" min={0} required />
+        <Field label="Product price (₹)" name="price" type="number" min={0} required />
         <Field label="Stock" name="stock" type="number" min={0} defaultValue={10} required />
         <Button type="submit" variant="secondary">Add product</Button>
       </form>
@@ -158,7 +158,7 @@ export function EventsPanel({ biz }: { biz: BusinessOwnerView }) {
               {["silver", "gold", "platinum", "custom"].map((t) => <option key={t} value={t}>{t}</option>)}
             </select>
           </label>
-          <Field label="Price (₹)" name="price" type="number" min={0} required />
+          <Field label="Package price (₹)" name="price" type="number" min={0} required />
           <Field label="Max guests" name="guests" type="number" min={1} defaultValue={200} required />
         </div>
         <Field label="Vendors in this package" name="vendors" hint="Comma-separated page addresses of vendors who accepted your invite" />
