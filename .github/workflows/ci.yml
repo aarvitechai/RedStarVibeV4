@@ -30,7 +30,7 @@ jobs:
           docker build -q -t redstarvibe-postgres:16 infra/docker/postgres
           docker run -d --name testdb -e POSTGRES_USER=rsv -e POSTGRES_PASSWORD=rsvtest -e POSTGRES_DB=rsv_test             -p 127.0.0.1:55432:5432 redstarvibe-postgres:16
           for i in $(seq 1 30); do docker exec testdb pg_isready -U rsv -d rsv_test && break; sleep 1; done
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
