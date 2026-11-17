@@ -24,6 +24,7 @@ dependencies = [
     "boto3>=1.40",
     "pillow>=12",
     "segno>=1.6",
+    "prometheus-client>=0.23",
 ]
 
 [project.optional-dependencies]
@@ -70,7 +71,7 @@ asyncio_default_test_loop_scope = "session"
 testpaths = ["tests"]
 
 [[tool.mypy.overrides]]
-module = ["celery.*", "kombu.*", "boto3.*", "botocore.*", "segno.*"]
+module = ["celery.*", "kombu.*", "boto3.*", "botocore.*", "segno.*", "prometheus_client.*"]
 ignore_missing_imports = true
 follow_untyped_imports = false
 disallow_untyped_calls = false

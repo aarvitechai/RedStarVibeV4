@@ -1,0 +1,39 @@
+# Blueprint 18.1 alert thresholds. Route them to the on-call channel with Alertmanager in staging/production.
+groups:
+  - name: redstarvibe
+    rules:
+      - alert: ApiP95High
+        expr: histogram_quantile(0.95, sum by (le) (rate(rsv_http_request_seconds_bucket[5m]))) > 0.3
+        for: 10m
+        labels: { severity: page }
+        annotations: { summary: "API p95 over 300 ms for 10 minutes" }
+      - alert: Api5xxRateHigh
+        expr: sum(rate(rsv_http_requests_total{status=~"5.."}[5m])) / clamp_min(sum(rate(rsv_http_requests_total[5m])), 1e-9) > 0.01
+        for: 5m
+        labels: { severity: page }
+        annotations: { summary: "5xx rate over 1% for 5 minutes" }
+      - alert: OutboxLag
+        expr: max(rsv_outbox_oldest_seconds) > 60
+        for: 2m
+        labels: { severity: page }
+        annotations: { summary: "Oldest unpublished outbox event older than 60 s" }
+      - alert: DeadLetters
+        expr: max(rsv_dead_letters) > 0
+        for: 5m
+        labels: { severity: ticket }
+        annotations: { summary: "Events in the dead-letter table" }
+      - alert: MediaQueueBacklog
+        expr: max(rsv_queue_depth{queue="media"}) > 500
+        for: 30m
+        labels: { severity: ticket }
+        annotations: { summary: "Media queue over 500 jobs for 30 minutes (Blueprint 19.3 trigger: separate media worker)" }
+      - alert: DefaultQueueBacklog
+        expr: max(rsv_queue_depth{queue="default"}) > 2000
+        for: 10m
+        labels: { severity: page }
+        annotations: { summary: "Default queue over 2,000 jobs" }
+      - alert: ApiDown
+        expr: up{job="api"} == 0
+        for: 2m
+        labels: { severity: page }
+        annotations: { summary: "API not scraped for 2 minutes" }

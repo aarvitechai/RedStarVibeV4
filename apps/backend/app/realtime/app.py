@@ -17,6 +17,7 @@ from app.core.cache import close_redis, get_redis
 from app.core.config import get_settings
 from app.core.cookies import access_cookie_name
 from app.core.database import dispose_engine, get_sessionmaker
+from app.core.metrics import WS_CONNECTIONS, render
 from app.core.security import TokenExpired, TokenInvalid, decode_access_token
 from app.modules.accounts import repository as accounts_repo
 from app.realtime.hub import channel
@@ -46,6 +47,9 @@ def _origin_ok(ws: WebSocket) -> bool:
     )
 
 
+app.add_api_route("/metrics", render, include_in_schema=False)
+
+
 @app.get("/ws/health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
@@ -67,6 +71,7 @@ async def socket(ws: WebSocket) -> None:
             await ws.close(code=4401)
             return
     await ws.accept()
+    WS_CONNECTIONS.inc()
     pubsub = get_redis().pubsub()
     await pubsub.subscribe(channel(claims.user_id))
     await ws.send_json({"type": "hello", "user_id": str(claims.user_id), "heartbeat_s": HEARTBEAT_S})
@@ -94,6 +99,7 @@ async def socket(ws: WebSocket) -> None:
     except WebSocketDisconnect:
         pass
     finally:
+        WS_CONNECTIONS.dec()
         for t in tasks:  # never leave background tasks running after a disconnect (Blueprint 27.3)
             t.cancel()
         await asyncio.gather(*tasks, return_exceptions=True)

@@ -7,13 +7,13 @@ from fastapi import FastAPI
 
 from app.api.health import router as health_router
 from app.api.v1.router import api_router
+from app.core.asgi import CsrfMiddleware, MetricsMiddleware, RequestIdMiddleware
 from app.core.cache import close_redis
 from app.core.config import get_settings
-from app.core.csrf import csrf_middleware
 from app.core.database import dispose_engine
 from app.core.errors import install_error_handlers
 from app.core.logging import configure_logging
-from app.core.request_context import request_id_middleware
+from app.core.metrics import render
 from app.mcp.server import mcp_router
 
 
@@ -34,11 +34,13 @@ def create_app() -> FastAPI:
         docs_url=None if settings.env == "production" else "/api/docs",
         openapi_url=None if settings.env == "production" else "/api/openapi.json",
     )
-    # Starlette runs the last-added middleware first: request id wraps CSRF so rejections carry an id.
-    app.middleware("http")(csrf_middleware)
-    app.middleware("http")(request_id_middleware)
+    # Pure ASGI middleware; the last added runs first: request id -> metrics -> CSRF -> app.
+    app.add_middleware(CsrfMiddleware)
+    app.add_middleware(MetricsMiddleware)
+    app.add_middleware(RequestIdMiddleware)
     install_error_handlers(app)
     app.include_router(health_router)
+    app.add_api_route("/metrics", render, include_in_schema=False)  # internal port only; not routed by nginx
     app.include_router(api_router)
     app.include_router(mcp_router)  # /mcp (Bearer token, no cookies -> outside CSRF)
     return app

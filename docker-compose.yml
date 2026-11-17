@@ -43,6 +43,9 @@ services:
 
   api:
     <<: *backend
+    environment:
+      PROMETHEUS_MULTIPROC_DIR: /tmp/prom
+    command: ["sh", "-c", "rm -rf /tmp/prom && mkdir -p /tmp/prom && exec gunicorn app.main:app -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 -w ${RSV_API_WORKERS:-2} --graceful-timeout 30"]
     depends_on:
       migrate: { condition: service_completed_successfully }
     healthcheck:
@@ -62,7 +65,7 @@ services:
 
   worker:
     <<: *backend
-    command: ["celery", "-A", "app.workers.celery_app", "worker", "-Q", "default,media,ai", "--concurrency", "3", "--loglevel", "INFO"]
+    command: ["celery", "-A", "app.workers.celery_app", "worker", "-Q", "${RSV_WORKER_QUEUES:-default,media,ai}", "--concurrency", "3", "--loglevel", "INFO"]
     depends_on:
       migrate: { condition: service_completed_successfully }
     mem_limit: 768m
@@ -133,6 +136,59 @@ services:
       retries: 20
     restart: unless-stopped
 
+  # ---- Optional: monitoring (docker compose --profile monitoring up -d) ----
+  prometheus:
+    profiles: [monitoring]
+    image: prom/prometheus:v3.7.3
+    volumes:
+      - ./infra/monitoring/prometheus:/etc/prometheus:ro
+      - promdata:/prometheus
+    ports:
+      - "127.0.0.1:${RSV_PROMETHEUS_PORT:-9090}:9090"
+    networks: [private]
+    restart: unless-stopped
+
+  grafana:
+    profiles: [monitoring]
+    image: grafana/grafana:12.2.1
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${RSV_GRAFANA_PASSWORD:-change-me-locally}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./infra/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "127.0.0.1:${RSV_GRAFANA_PORT:-3001}:3000"
+    networks: [private]
+    restart: unless-stopped
+
+  # ---- Optional: Level 2 scale-out pieces (docker compose --profile scale up -d) ----
+  pgbouncer:
+    # Transaction pooling (ADR 0002). Point RSV_DATABASE_URL at pgbouncer:6432 and set RSV_DB_PGBOUNCER=true.
+    profiles: [scale]
+    image: edoburu/pgbouncer:v1.24.1-p1
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-rsv}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-rsv}
+      POOL_MODE: transaction
+      MAX_CLIENT_CONN: "1000"
+      DEFAULT_POOL_SIZE: "40"
+      AUTH_TYPE: scram-sha-256
+      LISTEN_PORT: "6432"
+    networks: [private]
+    depends_on:
+      db: { condition: service_healthy }
+    restart: unless-stopped
+
+  worker-media:
+    # Separate pool for media/AI (Blueprint 19.3 trigger: media queue > 500 for 30 min daily).
+    # With this running, start the main worker with RSV_WORKER_QUEUES=default.
+    profiles: [scale]
+    <<: *backend
+    command: ["celery", "-A", "app.workers.celery_app", "worker", "-Q", "media,ai", "--concurrency", "${RSV_MEDIA_CONCURRENCY:-2}", "--loglevel", "INFO"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    mem_limit: 1g
+
 networks:
   public: {}
   private:
@@ -142,3 +198,4 @@ volumes:
   pgdata: {}
   redisdata: {}
   objectdata: {}
+  promdata: {}

@@ -13,7 +13,7 @@ Release: none deployed. Full local stack verified end to end at http://localhost
 - [ ] Phase 5 — Events and shop — code done; exit criterion (5 event companies + 10 shops live) needs pilot
 - [ ] Phase 6 — Money — code done with sandbox; real Razorpay needs keys + webhook URL; exit needs first real paid plan
 - [ ] Phase 7 — Calls and AI plus — code done with `AI_PROVIDER=none` + local LiveKit; real providers need keys; exit needs real AI cost data
-- [ ] Phase 8 — Scale (metrics-triggered)
+- [ ] Phase 8 — Scale (metrics-triggered) — tooling + Level 1 fixes done (ADR 0020, `docs/capacity/2026-11-17-baseline.md`); further steps wait for production triggers
 
 ## Phase 1 checklist
 | Item | Status | Evidence |
@@ -128,6 +128,17 @@ Release: none deployed. Full local stack verified end to end at http://localhost
 | MCP at /mcp: tokens with scopes, tools (search_posts, get_profile, list_notifications, get_bookings, get_orders, draft_post), draft-only writes, rate limit, audit | done (PAT; OAuth 2.1 open, ADR 0019) | `test_mcp_scopes_drafts_and_auth` + smoke 23–24 |
 | LiveKit calls: 5-min tokens after membership/block checks, ringing over WebSocket, 1:1 + small group call page | done | `test_call_tokens_membership_blocks_and_claims` + smoke 25 |
 | Real provider keys (Workers AI, Claude, LiveKit Cloud), RAG golden set in CI, spam model, call quality telemetry | **open** | needs accounts / data |
+
+## Phase 8 checklist
+| Item | Status | Evidence |
+|---|---|---|
+| Prometheus metrics (RED per route template, outbox lag, dead letters, queue depth, DB pool, WebSockets), `/metrics` hidden at the gateway | done | `tests/test_metrics.py`; Prometheus targets up |
+| Prometheus alert rules (Blueprint 18.1) + provisioned Grafana SLO dashboard (`make monitoring`) | done (local) | 7 rules loaded, dashboard provisioned |
+| k6 baseline + in-process hot-path profiler | done | `infra/scripts/load/baseline.js`, `scripts/profile_hot_paths.py` |
+| Level 1: pure ASGI middleware, no duplicate access log, fewer booking queries | done | reads p95 1.86 s → 195 ms locally |
+| Level 2 readiness: PgBouncer + separate media/AI worker (`--profile scale`), `RSV_API_WORKERS` | ready, off by default | runbook `docs/runbooks/scaling.md` |
+| Booking p95 < 300 ms | **open** | local disk fsync bound (5.4 ms/op); re-run on staging SSD |
+| Caches, replicas, partitions, Kafka, K8s | **deferred** | triggers in ADR 0020 |
 
 ## Verified features
 | Feature | Status | Evidence / test | Owner |

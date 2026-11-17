@@ -1,0 +1,6 @@
+apiVersion: 1
+providers:
+  - name: redstarvibe
+    folder: RedStarVibe
+    type: file
+    options: { path: /var/lib/grafana/dashboards }

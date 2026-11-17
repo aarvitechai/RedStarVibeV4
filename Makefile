@@ -4,7 +4,7 @@
 COMPOSE ?= docker compose
 BACKEND = $(COMPOSE) run --rm --no-deps api
 
-.PHONY: env up down logs ps migrate seed test lint fmt test-web lint-web e2e types load build
+.PHONY: env up down logs ps migrate seed test lint fmt test-web lint-web e2e types load monitoring build
 
 env:            ## first run: write .env with fresh secrets
 	python scripts/bootstrap_env.py
@@ -50,5 +50,8 @@ types:          ## regenerate OpenAPI + @rsv/api-types; CI fails if stale
 	$(BACKEND) python -m scripts.export_openapi > packages/api-types/openapi.json
 	cd packages/api-types && npm run generate
 
-load:           ## k6 baseline (added in Phase 1)
-	k6 run infra/scripts/load/baseline.js
+load:           ## k6 baseline against the running stack (see docs/runbooks/scaling.md)
+	docker run --rm -i --network $${COMPOSE_PROJECT_NAME:-rsv4}_public -e BASE=http://gateway:8080 -e DURATION=$${DURATION:-2m} grafana/k6:1.3.0 run - < infra/scripts/load/baseline.js
+
+monitoring:     ## Prometheus (127.0.0.1:9090) + Grafana (127.0.0.1:3001)
+	$(COMPOSE) --profile monitoring up -d prometheus grafana

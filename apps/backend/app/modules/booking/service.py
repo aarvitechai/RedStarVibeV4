@@ -19,6 +19,7 @@ from app.modules.booking.models import Booking
 from app.modules.booking.schemas import BookingCreate, BookingOut, BookingPage, SlotOut, SlotsOut
 from app.modules.booking.slots import Candidate, candidates, overlaps
 from app.modules.business import service as business
+from app.modules.business.models import Business, Service
 
 # Allowed transitions and who may make them.
 TRANSITIONS: dict[tuple[str, str], frozenset[str]] = {
@@ -43,10 +44,10 @@ def _day_window(day: date, tz: ZoneInfo) -> tuple[datetime, datetime]:
 
 
 async def _candidates_for(
-    db: AsyncSession, business_id: uuid.UUID, service_id: uuid.UUID, day: date, now: datetime
+    db: AsyncSession, b: Business, svc: Service, day: date, now: datetime
 ) -> tuple[ZoneInfo, list[Candidate], dict[uuid.UUID, list[Booking]], list[uuid.UUID]]:
-    b = await business.get_active_business(db, business_id)
-    svc = await business.get_bookable_service(db, business_id, service_id)
+    """Callers pass the business and service they already loaded (Phase 8: no duplicate lookups)."""
+    business_id = b.id
     tz = ZoneInfo(b.timezone)
     today = now.astimezone(tz).date()
     if day < today or day > today + timedelta(days=MAX_DAYS_AHEAD):
@@ -72,7 +73,9 @@ async def slots(
     db: AsyncSession, business_id: uuid.UUID, service_id: uuid.UUID, day: date, now: datetime | None = None
 ) -> SlotsOut:
     now = now or datetime.now(UTC)
-    tz, cands, by_resource, resources = await _candidates_for(db, business_id, service_id, day, now)
+    b = await business.get_active_business(db, business_id)
+    svc = await business.get_bookable_service(db, business_id, service_id)
+    tz, cands, by_resource, resources = await _candidates_for(db, b, svc, day, now)
     out = []
     for c in cands:
         free = sum(1 for r in resources if _free(c, r, by_resource))
@@ -98,7 +101,7 @@ async def create(
     tz = ZoneInfo(b.timezone)
     starts_at = data.starts_at.astimezone(UTC)
     day = starts_at.astimezone(tz).date()
-    _, cands, by_resource, resources = await _candidates_for(db, b.id, svc.id, day, now)
+    _, cands, by_resource, resources = await _candidates_for(db, b, svc, day, now)
     cand = next((c for c in cands if c.starts_at == starts_at), None)
     if cand is None:
         raise AppError("slot_unavailable", "This time is outside opening hours or too soon. Pick another slot.")

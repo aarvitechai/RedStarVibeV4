@@ -19,6 +19,7 @@ TASK_MODULES = [
     "app.modules.albums.tasks",
     "app.modules.events.tasks",
     "app.modules.payments.tasks",
+    "app.workers.ops_tasks",
 ]
 
 celery_app = Celery("redstarvibe", broker=settings.redis_url, backend=None, include=TASK_MODULES)
@@ -42,5 +43,6 @@ celery_app.conf.update(
         "booking-expiry": {"task": "booking.expire_stale", "schedule": 300.0, "options": {"expires": 250}},
         "event-hold-expiry": {"task": "events.expire_holds", "schedule": 600.0, "options": {"expires": 550}},
         "payments-reconcile": {"task": "payments.reconcile", "schedule": 900.0, "options": {"expires": 850}},
+        "ops-gauges": {"task": "ops.sample_gauges", "schedule": 15.0, "options": {"expires": 14}},
     },
 )
