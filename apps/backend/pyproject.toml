@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "RedStarVibe modular monolith backend (FastAPI)"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.163,<0.164",
+    "fastapi>=0.163,<0.166",
     "uvicorn[standard]>=0.54,<0.55",
     "gunicorn>=27.0,<28",
     "pydantic>=2.14,<3",
